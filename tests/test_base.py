@@ -1,6 +1,6 @@
 from app import app, app_config
 from flask import current_app
-from app.api.models.dish import Order
+from app.models.dish import Order
 import unittest
 
 

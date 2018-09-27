@@ -1,7 +1,11 @@
 from app import app
 from flask import jsonify
-from app.api.views import routes
+from app.views import routes
+from app.database.connect import Database
+db = Database()
+
 if __name__ == '__main__':
+    db.create_tables()
     app.run(debug=True)
 
 @app.errorhandler(405)

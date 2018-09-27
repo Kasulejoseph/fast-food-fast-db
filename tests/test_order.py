@@ -1,6 +1,6 @@
 from tests.test_base import BaseTestCase
-from app.api.models.orders import OrderList
-from app.api.models.dish import Order
+from app.models.orders import OrderList
+from app.models.dish import Order
 
 import unittest
 class OrderTestClass(BaseTestCase):
