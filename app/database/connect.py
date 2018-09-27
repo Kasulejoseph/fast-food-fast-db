@@ -39,9 +39,9 @@ class Database(object):
         self.cursor.execute(create_table)
 
         create_table = """ CREATE TABLE IF NOT EXISTS orders(
-        order_id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL, menu_id INTEGER NOT NULL
+        order_id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL, menu_id INTEGER NOT NULL,
         meal VARCHAR(40), description VARCHAR(200), price INT, status VARCHAR(30), 
-        FOREIGN KEY(user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE)
+        FOREIGN KEY(user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
         FOREIGN KEY(menu_id) REFERENCES menu(menu_id) ON UPDATE CASCADE ON DELETE CASCADE)"""
         self.cursor.execute(create_table)
 
@@ -124,7 +124,6 @@ class Database(object):
         update table orders set status ='' where order_id = id 
         :Admin
         """
-        pass
         status = ['New','processing','complete','cancelled']
         if stat in status:
             self.cursor.execute("UPDATE orders SET status = {} WHERE order_id ={} ").format(stat,id)
