@@ -1,5 +1,5 @@
 from flask import Flask 
-from app.api.views.routes import main
+from app.views.routes import main
 from instance.config import app_config
 
 app = Flask(__name__, instance_relative_config=True)

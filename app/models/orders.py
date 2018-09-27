@@ -1,5 +1,5 @@
 from flask import json
-from app.api.models.dish import Order
+from app.models.dish import Order
 
 class OrderList:
     """

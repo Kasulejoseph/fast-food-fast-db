@@ -1,5 +1,5 @@
 from tests.test_base import BaseTestCase
-from app.api.models.orders import OrderList
+from app.models.orders import OrderList
 
 import unittest
 import json
