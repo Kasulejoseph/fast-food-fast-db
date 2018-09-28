@@ -44,7 +44,7 @@ class LoginUser(Resource):
         db_user = db.get_order_by_value('users','username',username)
         new_user = User(db_user[0],db_user[1],db_user[2],db_user[3],db_user[4])
         if new_user.username == detail['username'] and check_password_hash(new_user.password, detail['password']):
-            #token
+            #generate token
             token = jwt.encode(
                 {'email':new_user.email,
                 'exp':datetime.utcnow() + timedelta(days=10, minutes=50)
