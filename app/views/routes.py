@@ -1,17 +1,20 @@
 from flask import Flask, request,jsonify,Blueprint,make_response
 from flask_restful import Api, Resource, abort
 from app.database.connect import Database
+from app.auth.decorator import token_required
 
 main = Blueprint('main', __name__)
 Database = Database()
 food_api = Api(main)
 
 class OrderAll(Resource):
+
     """
     Class has all request methods that 
     uses the end point /api/v1/orders/
     :Admin
     """
+    @token_required
     def get(self):
         all = Database.get_all_orders()
         if all:

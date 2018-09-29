@@ -2,13 +2,14 @@ import jwt
 from app.database.connect import Database
 from app.views.routes import main
 from app.models.model import User
+from app.auth.decorator import response
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api,Resource
 from datetime import datetime, timedelta
 from flask import make_response,Blueprint,request,jsonify
-main = Blueprint('main', __name__)
+auth = Blueprint('auth', __name__)
 db = Database()
-api = Api(main)
+api = Api(auth)
 
 class RegisterUser(Resource):
     def post(self):
@@ -52,16 +53,12 @@ class LoginUser(Resource):
                 )
             
             if token:
-                response = {
-                    'message': 'You have succesfully logged in.',
-                    'token':token.decode('UTF-8'),
-                    'username': new_user.username,
-                    'email': new_user.email,
-                    'Id': new_user.user_id
-                }  
-            return make_response(jsonify(response), 200)
+                return response(
+                    new_user.user_id,new_user.username,'You have succesfully logged in.',
+                    token.decode('UTF-8'), 200)
         return make_response(jsonify({"mesage":"Check your username or password"}), 401)
         
 
 api.add_resource(RegisterUser,'/api/v1/auth/signup')
 api.add_resource(LoginUser,'/api/v1/auth/login')
+
