@@ -1,8 +1,9 @@
 import jwt
+import re
 from app.database.connect import Database
 from app.views.routes import main
 from app.models.model import User
-from app.auth.decorator import response
+from app.auth.decorator import response, response_message
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api,Resource
 from datetime import datetime, timedelta
@@ -12,51 +13,88 @@ db = Database()
 api = Api(auth)
 
 class RegisterUser(Resource):
+    """
+    Class to register a user via api
+    """
+    
     def post(self):
+        """
+        User creates an account 
+        User sign up details are added to the data base
+        """
+        if request.content_type != 'application/json':
+            return response_message('Bad request','Content-type must be in json', 202)
+        
         detail = request.get_json()
         username = detail['username']
         email = detail['email']
         location = detail['location']
         password = generate_password_hash(detail['password'])
-        if not username:
-            make_response(jsonify({'message': "username required"}), 400)
-        if not email:
-            make_response(jsonify({'message': "email required"}), 400)
-        if not location:
-            make_response(jsonify({'message': "location required"}), 400)
-        if not password:
-            make_response(jsonify({'message': "password required please"}), 400)
+
+        if not username :
+            return response_message('Missing', 'Username required', 400)
+        
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email) :
+            return response_message('Error','Missing or wrong email format', 202)
+        
+        if not len(detail['password']) > 4:
+            return response_message('Failed','Ensure password is morethan 4 characters', 202)
+
+        if not isinstance(username, str) :
+            return response_message('Type Error', 'username, location and email must all be string', 202)
+        
+        if not re.match("^[a-zA-Z0-9_.-]+$", username):
+            return response_message('Space Error', 'Username should not have space, better user -', 400)
+        
         if db.get_order_by_value('users','email',email):
-            return make_response(jsonify({"message":"User already registered"}), 409)
+            return response_message('Failed', 'User already registered', 409)
+        
         db.insert_into_user(username, email,location,password)
-        return make_response(jsonify({'message':"User account successfully registered"}),201)
+        return response_message('Success', 'User account successfully created, log in', 201)
 
 class LoginUser(Resource):
+    """
+    Class to register a user via api
+    """
+    
     def post(self):
+        """
+        User login if he supplies correct credentials
+        Token is generated and given to a user
+        """
+        if request.content_type != 'application/json':
+            return response_message('Bad request','Content-type must be in json', 202)
+
         detail = request.get_json()
         username = detail['username']
         password = generate_password_hash(detail['password'])
-        if not username:
-            make_response(jsonify({'message': "username required"}), 400)
-        if not password:
-            make_response(jsonify({'message': "password required"}), 400)
-        if len(password)<6:
-            make_response(jsonify({'message': "password too short, should be more that 6 characters"}), 400)
+
+        if not username :
+            return response_message('Failed', 'Username required', 400)
+
+        if not username :
+            return response_message('Failed', 'Passed required', 400)
+        
         db_user = db.get_order_by_value('users','username',username)
         new_user = User(db_user[0],db_user[1],db_user[2],db_user[3],db_user[4])
+        
         if new_user.username == detail['username'] and check_password_hash(new_user.password, detail['password']):
             #generate token
+            payload = {
+                'email':new_user.email,
+                'exp':datetime.utcnow() + timedelta(minutes=30)
+            }
             token = jwt.encode(
-                {'email':new_user.email,
-                'exp':datetime.utcnow() + timedelta(days=10, minutes=50)
-                }, 'mysecret'
+                payload,
+                'mysecret',
+                algorithm='HS256'
                 )
             
             if token:
                 return response(
                     new_user.user_id,new_user.username,'You have succesfully logged in.',
-                    token.decode('UTF-8'), 200)
-        return make_response(jsonify({"mesage":"Check your username or password"}), 401)
+                    token.decode('UTF-8'),200)
+        return response_message('Failed', 'Check your username or password', 401)
         
 
 api.add_resource(RegisterUser,'/api/v1/auth/signup')
