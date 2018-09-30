@@ -1,7 +1,8 @@
 from app import app, app_config
 from flask import current_app
-from app.models.dish import Order
+from app.database.connect import Database as db
 import unittest
+import json
 
 
 class BaseTestCase(unittest.TestCase):
@@ -15,41 +16,47 @@ class BaseTestCase(unittest.TestCase):
 
     def setUp(self):
         self.client = app.test_client(self)
-        self.order = {'details': {
-            'id':3 ,
-            'dish': "jgh",
-            'description': "description",
-            'price': 34
-        }}
+        with app.app_context():
+            connect = db()
+            connect.drop_tables()
+            connect.create_tables()
+
+    def signup_user(self,username,email,location,password):
+        """
+        Method to define user registration details
+        """
+        register = {
+            "username": username,
+            "email": email,
+            "location": location,
+            "password": password
+        }
+        return self.client.post(
+            '/api/v1/auth/signup',
+            content_type= "application/json",
+            data = json.dumps(register)
+            )
+    def login_user(self,username,password):
+        """
+        Method to define user login details
+        """
+        login = {
+            "username": username,
+            "password": password
+        }
+        return self.client.post(
+            '/api/v1/auth/login',
+            content_type = "application/json",
+            data = json.dumps(login)
+        )
+
+
+
+    def tearDown(self):
+        with app.app_context():
+            connect = db()
+            connect.drop_tables()
+            connect.create_tables()
     
-    def test_app_exists(self):
-        self.assertFalse(self.create_app is None)
 
-    def test_order_class(self):
-        """ Test order parameters """
-        self.assertTrue(Order(1,"KATOGO",'all',2330))
-
-    def test_order_json(self):
-        """ Test order return dict format """
-        self.order = Order(1,"KATOGO",'all',2330)
-        dict_type = type(self.order.order_json())
-        self.assertEqual(dict_type,dict)
-
-    def test_id_is_integer(self):
-        int_id = type(Order.id_generator())
-        self.assertEqual(int_id,int)
-
-    def test_status_not_empty(self):
-        status_len = len(Order.status())
-        self.assertTrue(status_len!=0)
-
-    def test_status_is_valid(self):
-        self.order = Order(1,"KATOGO",'all',2330)
-        status = ['pending','accept','decline','complete']
-        self.assertEqual(Order.status(),status)
-
-    def test_status_is_not_valid(self):
-        self.order = Order(1,"KATOGO",'all',2330)
-        status = ['pending','accept','decline']
-        self.assertNotEqual(Order.status(),status)
 

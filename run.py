@@ -1,12 +1,10 @@
 from app import app
 from flask import jsonify
 from app.views import routes
+from app.auth import views
 from app.database.connect import Database
 db = Database()
 
-if __name__ == '__main__':
-    db.create_tables()
-    app.run(debug=True)
 
 @app.errorhandler(405)
 def url_not_found(error):
@@ -23,3 +21,7 @@ def page_not_found(error):
 @app.errorhandler(500)
 def internal_error(error):
     return jsonify({'error': "500 error"}), 500
+
+if __name__ == '__main__':
+    db.create_tables()
+    app.run(debug=True)
