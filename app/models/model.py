@@ -12,8 +12,7 @@ class Order:
     """
     class define order entities and return order dictionary
     """
-    def __init__(self, id,dish_name,description,price):
-        self.id = id
+    def __init__(self, dish_name,description,price,status):
         self.dish = dish_name
         self.description = description
         self.price = price
@@ -24,7 +23,6 @@ class Order:
         return order in dictionary format
         """
         return  {
-            'id': self.id,
             'dish': self.dish,
             'description': self.description,
             'price': self.price,
@@ -36,5 +34,5 @@ class Order:
         """
         Generate status list for orders
         """
-        status = ['pending','accept','decline','complete']
+        status = ['New','processing','cancelled','complete']
         return status

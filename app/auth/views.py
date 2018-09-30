@@ -41,7 +41,7 @@ class RegisterUser(Resource):
             return response_message('Failed','Ensure password is morethan 4 characters', 202)
 
         if not isinstance(username, str) :
-            return response_message('Type Error', 'username, location and email must all be string', 202)
+            return response_message('Type Error', 'username must all be string', 202)
         
         if not re.match("^[a-zA-Z0-9_.-]+$", username):
             return response_message('Space Error', 'Username should not have space, better user -', 400)

@@ -34,7 +34,9 @@ class Database(object):
         self.cursor.execute(create_table)
 
         create_table = """ CREATE TABLE IF NOT EXISTS menu(
-        menu_id SERIAL PRIMARY KEY, meal VARCHAR(40), description VARCHAR(200),
+        menu_id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL,
+        FOREIGN KEY(user_id) REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
+        meal VARCHAR(40), description VARCHAR(200),
         price INT NOT NULL, status VARCHAR(30))"""
         self.cursor.execute(create_table)
 
@@ -55,23 +57,23 @@ class Database(object):
         self.cursor.execute(user)
         self.connection.commit()
 
-    def add_to_menu(self):
+    def add_to_menu(self,user_id, meal,description, price):
         """
         Query to add food item to menu table in database
         :admin 
         """
-        order_query = """INSERT INTO menu(meal,description,price)
-        VALUES('{}','{}','{}'); """.format(meal,description,price)
-        self.cursor.execute(order_query)
+        meal_query = """INSERT INTO menu(meal,description,price)
+        VALUES('{}',{}','{}','{}'); """.format(user_id,meal,description,price)
+        self.cursor.execute(meal_query)
         self.connection.commit()
 
-    def insert_into_orders(self,meal,description,price):
+    def insert_into_orders(self,user_id, menu_id, meal,description,price,status):
         """
         Query to add order to the database 
         :user
         """
-        order_query = """INSERT INTO orders(meal,description,price)
-        VALUES('{}','{}','{}'); """.format(meal,description,price)
+        order_query = """INSERT INTO orders(user_id, menu_id, meal, description, price, status)
+        VALUES('{}','{}','{}','{}','{}','{}'); """.format(user_id, menu_id, meal, description, price, status)
         self.cursor.execute(order_query)
         self.connection.commit()
 
@@ -118,14 +120,18 @@ class Database(object):
         """
         pass
     
-    def update_order_status(self,id):
+    def update_order_status(self,stat, id):
         """
         update table orders set status ='' where order_id = id 
         :Admin
         """
         status = ['New','processing','complete','cancelled']
         if stat in status:
-            self.cursor.execute("UPDATE orders SET status = {} WHERE order_id ={} ").format(stat,id)
+            query = "UPDATE orders SET status = '{}' WHERE order_id ='{}' ".format(stat,id)
+            self.cursor.execute(query)
+            self.connection.commit()
+            return "Order succcessfully Updated"
+        return "Invalid Update status name"
 
     def drop_tables(self):
         drop_query = "DROP TABLE IF EXISTS {0} CASCADE"
