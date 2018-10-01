@@ -81,17 +81,18 @@ class UpdateStatus(Resource):
     """
     def put(self, order_id):
         data = request.get_json()
+        if request.content_type != 'application/json':
+            return response_message('Failed','Content type must be application/json', 401)
+
+        if not isinstance(data['status'], str) :
+            return response_message('Type Error', 'Status must only be string', 400)
+               
+        if data['status'].isspace() or len(data['status']) ==0:
+            return response_message('Failed','Status should not be empty or have only spaces', 401)
+        
         to_update = Database.update_order_status(data['status'],order_id)
         if to_update:
             return response_message('message',to_update, 200)
-
-    def validate_inputs(self):
-        data = request.get_json()
-        try:
-            order = Order(data['meal'],data['description'],data['price'],status='new')
-            return order
-        except expression as identifier:
-            pass
 
 food_api.add_resource(OrderAll, '/api/v1/orders/')
 food_api.add_resource(OrderPost, '/api/v1/users/orders/')
