@@ -50,6 +50,36 @@ class BaseTestCase(unittest.TestCase):
             data = json.dumps(login)
         )
 
+    # def order_post(self,meal,desc,price):
+    #     """
+    #     Define post attributes and post route
+    #     """
+    #     data = {
+    #         "meal": meal,
+    #         "desc": desc,
+    #         "price": price
+    #     }
+    #     return self.client.post(
+    #         '/api/v1/orders/',
+    #         content_type= "application/json",
+    #         data = json.dumps(data)
+    #         )
+ 
+    def order_post(self,meal,desc,price):
+        """
+        Define post attributes and post route
+        """
+        data = {
+            "meal": meal,
+            "description": desc,
+            "price": price
+        }
+        return self.client.post(
+            '/api/v1/users/orders/',
+            content_type= "application/json",
+            data = json.dumps(data)
+            )
+
 
 
     def tearDown(self):
