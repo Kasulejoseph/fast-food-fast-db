@@ -1,12 +1,12 @@
 import jwt
 import re
+import datetime
 from app.database.connect import Database
-from app.views.routes import main
+from app.views.orders import main
 from app.models.model import User
 from app.auth.decorator import response, response_message
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api,Resource
-from datetime import datetime, timedelta
 from flask import make_response,Blueprint,request,jsonify
 auth = Blueprint('auth', __name__)
 db = Database()
@@ -81,8 +81,11 @@ class LoginUser(Resource):
         if new_user.username == detail['username'] and check_password_hash(new_user.password, detail['password']):
             #generate token
             payload = {
-                'email':new_user.email,
-                'exp':datetime.utcnow() + timedelta(minutes=30)
+                'email': new_user.email,
+                'exp': datetime.datetime.utcnow() +
+                        datetime.timedelta(days=90),
+                'iat': datetime.datetime.utcnow(),
+                'sub': new_user.user_id
             }
             token = jwt.encode(
                 payload,

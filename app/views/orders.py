@@ -16,7 +16,7 @@ class OrderAll(Resource):
     uses the end point /api/v1/orders/
     :Admin
     """
-    # @token_required
+    @token_required
     def get(self):
         all = Database.get_all_orders()
         if all:
@@ -33,8 +33,19 @@ class OrderPost(Resource):
     """
     def post(self,current_id=1,menu_id=1):
         data = request.get_json()
+        if request.content_type != 'application/json':
+            return response_message('Failed','Content type must be application/json', 401)
+        if not isinstance(data['description'], str) or not isinstance(data['meal'], str):
+            return response_message('Failed','Description and Dish must be string format', 401)
+        if data['meal'].isspace() or data['description'].isspace():
+            return response_message('Failed','order request contains spaces only', 401)
+        if not isinstance(data['price'], int):
+            return response_message('Failed','price must be integer', 401)
+        if len(data['meal'])==0 or len(data['description']) == 0 or data['price'] == 0:
+            return response_message('Failed','No field should be left empty', 401)
+        
         order = Order(data['meal'],data['description'],data['price'],status='new')
-
+           
         meal = order.dish
         description = order.description
         price = order.price
@@ -73,6 +84,14 @@ class UpdateStatus(Resource):
         to_update = Database.update_order_status(data['status'],order_id)
         if to_update:
             return response_message('message',to_update, 200)
+
+    def validate_inputs(self):
+        data = request.get_json()
+        try:
+            order = Order(data['meal'],data['description'],data['price'],status='new')
+            return order
+        except expression as identifier:
+            pass
 
 food_api.add_resource(OrderAll, '/api/v1/orders/')
 food_api.add_resource(OrderPost, '/api/v1/users/orders/')
