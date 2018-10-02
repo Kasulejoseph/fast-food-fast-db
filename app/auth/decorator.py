@@ -3,6 +3,22 @@ from flask import request, jsonify, current_app,make_response
 import jwt
 from app.models.model import User
 from app.database.connect import Database 
+def get_token():
+    token = None
+    if 'Authorization' in request.headers:
+        token = request.headers['Authorization']
+
+    token = token.split(" ")[1]
+
+    if not token:
+        return make_response(jsonify({
+            'status':'failed',
+            'message':'Token is missing!'
+            }),401)
+    return token
+
+def role_required(user):
+    return user
 def token_required(f):
     """
     Decotator function to ensure that end points are provided by
@@ -10,25 +26,16 @@ def token_required(f):
     """
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = None
-        if 'Authorization' in request.headers:
-            token = request.headers['Authorization']
-
-        if not token:
-            return make_response(jsonify({
-                'status':'failed',
-                'message':'Token is missing!'
-                }),401)
-
+        token = get_token()
         try:
             data = jwt.decode(token,'mysecret')
-            current_user = data['sub']
-            return True
-            # database = Database()
-            # query = database.get_order_by_value(
-            #     'users','email', data['email']
-            # )
-            # current_user = User(query[0], query[1], query[2], query[3],query[4])
+            user_role = data['role']
+            # role_required(user = user_role)
+            database = Database()
+            query = database.get_order_by_value(
+                'users','email', data['email']
+            )
+            current_user = User(query[0], query[1], query[2], query[3],query[4])
         except jwt.ExpiredSignatureError:
             return 'Signature expired. Please log in again.'
         except jwt.InvalidTokenError:
@@ -41,6 +48,12 @@ def token_required(f):
 
         return f(current_user, *args, **kwargs)
     return decorated
+
+def role_required():
+    token = get_token()
+    data = jwt.decode(token,'mysecret')
+    user_role = data['role']
+    return user_role
 
 def response(id, username, message, token, status_code):
     """
