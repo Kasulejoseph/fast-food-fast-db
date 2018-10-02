@@ -1,10 +1,11 @@
-from flask import Flask, request,jsonify,Blueprint,make_response
+from flask import Flask, request, jsonify, Blueprint, make_response
 from flask_restful import Api, Resource, abort
 from app.database.connect import Database
+from app import main
 
-main = Blueprint('main', __name__)
 Database = Database()
 food_api = Api(main)
+
 
 class MenuAll(Resource):
     """
@@ -24,7 +25,13 @@ class MenuPost(Resource):
     :User
     """
     def post(self):
-        pass
+        data = request.get_json()
+        meal = data['meal']
+        desc = data['description']
+        price = data['price']
+        if Database.add_to_menu(meal,desc,price):
+            return make_response(jsonify({'message':'successfully added to menu'}), 201)
+        return make_response(jsonify({'Failed': 'Error adding a menu'}))
 
 food_api.add_resource(MenuAll, '/api/v1/menu')
 food_api.add_resource(MenuPost, '/api/v1/menu')
