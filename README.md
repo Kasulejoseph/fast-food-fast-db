@@ -48,3 +48,15 @@ coverage run --source=. -m unittest discover
 ```
 ## API End Points
 
+|           End Point                      |     Resource Accessed    |   Access   | Requirements|
+|   -------------------------------------- |-----------------------|------------|-------------|
+|     api/v1/auth/signup      POST             | Register a user   |   PUBLIC   | username, email, password
+|     api/v1/auth/login   POST       | Login a user   |   PUBLIC | username, password, role |
+|     api/v1/users/orders     POST   | Place an order for food.  |   PUBLIC |user_id, menu_id
+|     api/v1/users/orders    GET      | Get the order history for a particular user.    |    PUBLIC  |user_id
+|     api/v1/orders       GET | Get all orders    |   ADMIN  |user_id, menu_id, order_id
+|    api/v1/orders/order_id GET   | Fetch a specific order  |   ADMIN |order_id
+|    api/v1/orders/order_id  PUT  | Update the status of an order   |   ADMIN   | order_id
+|     api/v1/menu GET  | Get available menu    |   PUBLIC   | menu_id
+|     api/v1/menu POST | Add a meal option to the menu.    |   ADMIN   | menu_id
+
