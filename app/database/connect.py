@@ -63,7 +63,7 @@ class Database(object):
         :admin 
         """
         meal_query = """INSERT INTO menu(meal,description,price)
-        VALUES('{}',{}','{}','{}'); """.format(user_id,meal,description,price)
+        VALUES('{}','{}','{}','{}'); """.format(user_id,meal,description,price)
         self.cursor.execute(meal_query)
         self.connection.commit()
 

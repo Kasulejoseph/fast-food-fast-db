@@ -1,6 +1,6 @@
 from app import app
 from flask import jsonify
-from app.views import routes
+from app.views import orders
 from app.auth import views
 from app.database.connect import Database
 db = Database()

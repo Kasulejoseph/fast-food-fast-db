@@ -1,5 +1,5 @@
 from flask import Flask 
-from app.views.routes import main
+from app.views.orders import main
 from app.auth.views import auth
 from instance.config import app_config
 
