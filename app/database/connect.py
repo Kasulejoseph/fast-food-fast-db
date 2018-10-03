@@ -21,7 +21,11 @@ class Database(object):
                 dbname ='test_db' user='postgres' password ='password'
                 host='127.0.0.1' port='5432'
                 """
-                ) 
+                )
+           else:
+                DATABASE_URL = os.environ['DATABASE_URL']
+
+                self.connection = psycopg2.connect(DATABASE_URL, sslmode='require')
         except Exception as e:
             print(e)
         self.cursor = self.connection.cursor()
