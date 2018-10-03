@@ -22,7 +22,7 @@ class Database(object):
                     dbname ='test_db' user='postgres' password ='password'
                     host='127.0.0.1' port='5432'
                     """
-                ) 
+                )
         except Exception as e:
             print(e)
         self.cursor = self.connection.cursor()
@@ -31,7 +31,8 @@ class Database(object):
         """ create tables """
         create_table = """CREATE TABLE IF NOT EXISTS users
         (user_id SERIAL PRIMARY KEY, username VARCHAR(30),
-        email VARCHAR(100), location VARCHAR(100), password VARCHAR(150))"""
+        email VARCHAR(100), location VARCHAR(100), password VARCHAR(150),
+        role VARCHAR(100) DEFAULT 'user')"""
         self.cursor.execute(create_table)
 
         create_table = """ CREATE TABLE IF NOT EXISTS menu(
@@ -51,11 +52,13 @@ class Database(object):
 
     def insert_into_user(self, username, email, location, password):
         """
-        Query to add a new user 
+        Query to add a new user
         :admin,user
         """
-        user = """INSERT INTO users (username, email, location,password) VALUES
-        ('{}','{}','{}','{}'); """.format(username, email, location, password)
+        user = """INSERT INTO users
+            (username, email, location, password)
+            VALUES ('{}','{}','{}','{}');
+            """.format(username, email, location, password)
         self.cursor.execute(user)
         self.connection.commit()
 
@@ -127,7 +130,7 @@ class Database(object):
         if results:
             return results
         return "you haven't ordered yet"
-    
+
     def update_order_status(self, stat, id):
         """
         update table orders set status ='' where order_id = id 
@@ -141,6 +144,12 @@ class Database(object):
             self.connection.commit()
             return "Order succcessfully Updated"
         return "Invalid Update status name"
+
+    def update_role(self, role, email):
+        query = """UPDATE users SET role = '{}'
+            WHERE email ='{}' """.format(role, email)
+        self.cursor.execute(query)
+        self.connection.commit()
 
     def drop_tables(self):
         drop_query = "DROP TABLE IF EXISTS {0} CASCADE"

@@ -9,8 +9,7 @@ def get_token():
     token = None
     if 'Authorization' in request.headers:
         token = request.headers['Authorization']
-
-    token = token.split(" ")[1]
+        token = token.split(" ")[1]
 
     if not token:
         return make_response(jsonify({
@@ -35,23 +34,16 @@ def token_required(f):
         try:
             data = jwt.decode(token, 'mysecret')
             user_role = data['role']
-            # role_required(user = user_role)
             database = Database()
             query = database.get_order_by_value(
                 'users', 'email', data['email']
             )
             current_user = User(
-                query[0], query[1], query[2], query[3], query[4])
+                query[0], query[1], query[2], query[3], query[4], query[5])
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.'
+            return 'Signature expired. Please log in again.', 401
         except jwt.InvalidTokenError:
-            return 'Invalid token. Please log in again.' 
-        except:
-            return make_response(jsonify({
-                "status": "failed",
-                "mesage": "Invalid token"
-                }), 401)
-
+            return 'Invalid token. Please log in again.', 401
         return f(current_user, *args, **kwargs)
     return decorated
 
@@ -74,20 +66,20 @@ def response(id, username, message, token, status_code):
     """
     method to make http response for authorization token
     """
-    return make_response(jsonify({
+    return {
         "id": id,
         "username": username,
         "message": message,
         "auth_token": token
 
-    }), status_code)
+    }, status_code
 
 
 def response_message(status, message, status_code):
     """
     method to handle response messages
     """
-    return make_response(jsonify({
+    return {
         "status": status,
         "message": message
-    }), status_code)
+        }, status_code

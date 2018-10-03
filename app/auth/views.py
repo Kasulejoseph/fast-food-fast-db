@@ -49,6 +49,8 @@ class RegisterUser(Resource):
         if db.get_order_by_value('users', 'email', email):
             return response_message('Failed', 'User already registered', 409)
         db.insert_into_user(username, email, location, password)
+        if detail['role']:
+            db.update_role(detail['role'], email)
         return response_message(
             'Success', 'User account successfully created, log in', 201)
 
@@ -67,15 +69,19 @@ class LoginUser(Resource):
                 'Bad request', 'Content-type must be in json', 202)
         detail = request.get_json()
         username = detail['username']
-        role = detail['role']
+        # role = detail['role']
         password = generate_password_hash(detail['password'])
         if not username:
             return response_message('Failed', 'Username required', 400)
         if not username:
             return response_message('Failed', 'Passed required', 400)
         db_user = db.get_order_by_value('users', 'username', username)
+        if not db_user:
+            return ({"Failed": "incorect username"}, 401)
         new_user = User(
-            db_user[0], db_user[1], db_user[2], db_user[3], db_user[4])
+            db_user[0], db_user[1], db_user[2], db_user[3],
+            db_user[4], db_user[5]
+        )
         if new_user.username == detail['username'] and check_password_hash(
                 new_user.password, detail['password']):
             payload = {
@@ -84,7 +90,7 @@ class LoginUser(Resource):
                 datetime.timedelta(days=60),
                 'iat': datetime.datetime.utcnow(),
                 'sub': new_user.user_id,
-                'role': role
+                'role': new_user.role
             }
             token = jwt.encode(
                 payload,
@@ -97,7 +103,8 @@ class LoginUser(Resource):
                     'You have succesfully logged in.',
                     token.decode('UTF-8'), 200)
         return response_message(
-            'Failed', 'Check your username or password', 401)    
+            'Failed', 'incorrect password', 401
+        )
 # register
 api.add_resource(RegisterUser, '/api/v1/auth/signup')
 api.add_resource(LoginUser, '/api/v1/auth/login')
