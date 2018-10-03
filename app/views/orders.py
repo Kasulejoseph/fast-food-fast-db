@@ -20,11 +20,21 @@ class OrderAll(Resource):
     def get(self, current_user):
         if role_required() == 'admin':
             all = Database.get_all_orders()
-            if all:
-                return make_response(jsonify(all), 200)
-                # 'order_id':all[0][0], 'menu_id':all[0][1], 'user_id':all[0][2], 'meal':all[0][3],
-                # 'desc':all[0][4], 'price':all[0][5], 'status':all[0][6]}), 200)
-            return {'error': 'no orders posted yet'}, 404
+            all_order_list = []
+            if not all:
+                return {'error': 'no orders posted yet'}, 404
+            for row in all:
+                order_dict = {
+                    "order_id": row[0],
+                    "menu_id": row[1],
+                    'user_id': row[2],
+                    "meal": row[3],
+                    "desc": row[4],
+                    "price": row[5],
+                    "status": row[6]
+                }
+                all_order_list.append(order_dict)
+            return {'Orders': all_order_list}, 200
         return {
             'Failed': 'You dont have permission to access this route'
             }, 409
@@ -118,9 +128,21 @@ class UserHistory(Resource):
     def get(current_user, user):
         user_id = current_user.user_id
         order_all = Database.get_order_history_for_a_user(user_id)
-        if order_all:
-            return {'Your orders': order_all}, 200
-        return {'error': 'no order history found'}, 401
+        order_list = []
+        if not order_all:
+            return {'error': 'You have not ordered from the site yet'}, 404
+        for row in order_all:
+            order_dict = {
+                "order_id": row[0],
+                "menu_id": row[1],
+                'user_id': row[2],
+                "meal": row[3],
+                "desc": row[4],
+                "price": row[5],
+                "status": row[6]
+            }
+            order_list.append(order_dict)
+        return {'Requested': order_list}, 200
 
 
 class MenuAll(Resource):
@@ -131,9 +153,18 @@ class MenuAll(Resource):
     """
     def get(self):
         all = Database.fetch_menu()
-        if all:
-            return {'Orders': all}, 200
-        return {'error': 'Nothing on menu'}, 404
+        menu_list = []
+        if not all:
+            return {'error': 'nothing on menu today'}, 404
+        for row in all:
+            menu_dict = {
+                "menu_id": row[0],
+                "meal": row[1],
+                "desc": row[2],
+                "price": row[3]
+            }
+            menu_list.append(menu_dict)
+        return {'Onmenu': menu_list}, 200
 
 
 class MenuPost(Resource):
