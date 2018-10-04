@@ -1,5 +1,6 @@
 import psycopg2
 from flask import current_app as app
+import os
 
 
 class Database(object):
@@ -7,25 +8,25 @@ class Database(object):
 
     def __init__(self):
         """initialize db connection """
-        self.connection = psycopg2.connect(
-            """
-            dbname ='food_db' user='postgres' password ='password'
-            host='127.0.0.1' port='5432'
-            """
-        )
-        self.connection.autocommit = True
-        self.cursor = self.connection.cursor()
         try:
-           if app.config['TESTING']:
+            if os.getenv("APP_SETTINGS") == "testing":
                 self.connection = psycopg2.connect(
-                    """
-                    dbname ='test_db' user='postgres' password ='password'
-                    host='127.0.0.1' port='5432'
-                    """
+                    str(os.getenv("DATABASE_URL2"))
                 )
-        except Exception as e:
+            elif os.getenv("APP_SETTINGS") == "development":
+                self.connection = psycopg2.connect(
+                    str(os.getenv("DATABASE_URL1"))
+                )
+            else:
+
+                self.connection = psycopg2.connect(
+                    str(os.getenv("DATABASE_URL"))
+                )
+            self.connection.autocommit = True
+            self.cursor = self.connection.cursor()
+        except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-        self.cursor = self.connection.cursor()
+            print("connection failed")
 
     def create_tables(self):
         """ create tables """

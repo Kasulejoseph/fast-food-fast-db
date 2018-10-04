@@ -10,8 +10,6 @@ class Config(object):
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
-#     DATABASE_URL1 = 'postgresql://postgres:password@localhost:5432/food_db'
-    DATABASE_URL = 'postgres://mlmjbgdiusgkek:42f5c949ece6dd260303c77682bffb55cb2a53cd8973435a1e8bb3fd0de1abe2@ec2-23-23-80-20.compute-1.amazonaws.com:5432/dbigg45nbqe6jq'
 
 
 class TestingConfig(Config):

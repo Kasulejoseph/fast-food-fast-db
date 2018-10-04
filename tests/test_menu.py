@@ -71,32 +71,20 @@ class TestOrder(BaseTestCase):
         with self.client:
             order = self.order("chicken", "roasted", 8990, 'new')
             self.assertTrue(order)
-            # aa = Database().add_to_menu(
-            #     order['meal'], order['desc'], order['price'])
-            # self.assertTrue(aa)
-    # def test_succesful_order_creation(self):
-    #     with self.client:
-    #         order  = {
-    #             "user_id": 1,
-    #             "meal": "luwombo",
-    #             "description": "any kind",
-    #             "price": 9000,
-    #             "status": "New"
-    #         }
-    #         Database().add_to_menu('luwombo','any','4000')
-    #         Database().insert_into_user("kasule", "email@gmail.com","location", "password")
-    #         # Database.insert_into_orders(1,"menu_id","meal,description",9000,"new")
-    #         rs = self.client.post(
-    #         '/api/v1/users/orders/',
-    #         content_type= "application/json",
-    #         data = json.dumps(order)
-    #         )
-    #         self.assertEqual(rs.status_code, 201)
-    #         data = json.loads(rs.data.decode())
-    #         self.assertTrue(data['status'] == 'Success')
-    #         self.assertTrue(data['message'] == 'Order successfully submited')
+            rs = self.menu_post("chicken", "flied", 5000)
+            Database().add_to_menu("chicken", "flied", 5000)
+            data = json.loads(rs.data.decode())
+            self.assertEqual(rs.status_code, 201)
+            self.assertIn("successfully added to menu", str(data))
 
+    def test_fetch_all_menu_items(self):
+        with self.client:
+            rs = self.menu_post("chicken", "flied", 5000)
+            Database().add_to_menu("chicken", "flied", 5000)
+            data1 = json.loads(rs.data.decode())
+            self.assertEqual(rs.status_code, 201)
+            result = self.menu_get(1, "dsa", "dsa", 6777)
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 200)
+            self.assertIn("Onmenu", str(data))
             
-
-
-

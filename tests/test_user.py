@@ -142,9 +142,8 @@ class TestAuth(BaseTestCase):
             self.assertEqual(resp.status_code, 401)
             self.assertTrue(res['status'] == 'Failed')
             self.assertEqual(
-                'incorrect password', str(res['message'])
-            )
-    
+                'incorrect password', str(res['message']))
+
     def test_successful_signup(self):
         with self.client:
             result = self.signup_user(
@@ -153,5 +152,6 @@ class TestAuth(BaseTestCase):
             res = json.loads(result.data.decode())
             self.assertTrue(res['status'] == 'Success')
             self.assertEqual(
-                'User account successfully created, log in', str(res['message'])
-            )
+                'User account successfully created, log in',
+                str(res['message']))
+                
