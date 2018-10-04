@@ -46,27 +46,31 @@ class OrderPost(Resource):
     """
     @token_required
     def post(current_user, menu_id):
-        data = request.get_json()
-        if request.content_type != 'application/json':
-            return response_message(
-                'Failed', 'Content type must be application/json', 401)
-        id_menu = data['meal_id']
-        if not isinstance(id_menu, int):
-            return response_message(
-                'Failed', 'menu ids should be of integer data types only', 401)
-        if id_menu == 0:
-            return response_message(
-                'Failed', 'Zero is not a menu id', 401)
-        current_user = current_user.user_id
-        order_row = Database.get_order_by_value('menu', 'menu_id', id_menu)
-        if not order_row:
-            return ({"Message": "No item for that id"}, 404)
-        dish = order_row[1]
-        desc = order_row[2]
-        price = order_row[3]
-        Database.insert_into_orders(
-            current_user, id_menu, dish, desc, price, status='new')
-        return response_message('Success', 'Order successfully submited', 200)
+        try:
+            data = request.get_json()
+            if request.content_type != 'application/json':
+                return response_message(
+                    'Failed', 'Content type must be application/json', 401)
+            id_menu = data['meal_id']
+            if not isinstance(id_menu, int):
+                return response_message(
+                    'Failed', 'menu ids should be of integer data types only', 401)
+            if id_menu == 0:
+                return response_message(
+                    'Failed', 'Zero is not a menu id', 401)
+            current_user = current_user.user_id
+            order_row = Database.get_order_by_value('menu', 'menu_id', id_menu)
+            if not order_row:
+                return ({"Message": "No item for that id"}, 404)
+            dish = order_row[1]
+            desc = order_row[2]
+            price = order_row[3]
+            Database.insert_into_orders(
+                current_user, id_menu, dish, desc, price, status='new')
+            return response_message('Success', 'Order successfully submited', 200)
+        except KeyError as e:
+            return ({'KeyError': str(e)})
+        
 
 
 class OrderById(Resource):
@@ -88,8 +92,9 @@ class OrderById(Resource):
                 'desc': order_one[4], 'price': order_one[5]
                 }
             user = Database.get_order_by_value('users', 'user_id', order_id)
-            return make_response(jsonify({
-                'order': response, 'Order BY': role_required()}), 200)
+            return ({
+                'order': response, 'Order BY': role_required()
+                }), 200
         return response_message('Failed', 'No order by that Id', 404)
 
 
@@ -180,33 +185,34 @@ class MenuPost(Resource):
     :User
     """
     def post(self):
-        data = request.get_json()
-        meal = data['meal']
-        desc = data['description']
-        price = data['price']
-        if not isinstance(
-                desc, str) or not isinstance(meal, str):
-            return response_message(
-                'Failed', 'Description and Dish must be string format', 401)
-        if meal.isspace() or desc.isspace():
-            return response_message(
-                'Failed', 'order request contains spaces only', 401)
-        if not isinstance(price, int):
-            return response_message('Failed', 'price must be integer', 401)
-        if len(meal) == 0 or len(desc) == 0 or price == 0:
-            return response_message(
-                'Failed', 'No field should be left empty', 401)
-        order = Order(meal, desc, price, status='new')
-        meal = order.dish
-        if Database.add_to_menu(meal, desc, price):
-            return {'Failed': 'Error adding a menu'}, 401
-        return {'message': 'successfully added to menu'}, 201
+        try:
+            data = request.get_json()
+            meal = data['meal']
+            desc = data['description']
+            price = data['price']
+            if not isinstance(
+                    desc, str) or not isinstance(meal, str):
+                return response_message(
+                    'Failed', 'Description and Dish must be string format', 401)
+            if meal.isspace() or desc.isspace():
+                return response_message(
+                    'Failed', 'order request contains spaces only', 401)
+            if not isinstance(price, int):
+                return response_message('Failed', 'price must be integer', 401)
+            if len(meal) == 0 or len(desc) == 0 or price == 0:
+                return response_message(
+                    'Failed', 'No field should be left empty', 401)
+            order = Order(meal, desc, price, status='new')
+            meal = order.dish
+            if Database.add_to_menu(meal, desc, price):
+                return {'Failed': 'Error adding a menu'}, 401
+            return {'message': 'successfully added to menu'}, 201
+        except KeyError as e:
+            return ({'KeyError': str(e)})
 
 food_api.add_resource(MenuAll, '/api/v1/menu')
 food_api.add_resource(MenuPost, '/api/v1/menu')
 
-
-# register
 food_api.add_resource(OrderAll, '/api/v1/orders/')
 food_api.add_resource(OrderPost, '/api/v1/users/orders/')
 food_api.add_resource(OrderById, '/api/v1/orders/<int:order_id>')

@@ -73,7 +73,7 @@ class TestAuth(BaseTestCase):
             data = json.loads(result.data.decode())
             self.assertTrue(data['status'] == 'Space Error')
             self.assertTrue(data['message'] == 'Username should not have space, better user -')
-    
+  
     def test_username_not_provided(self):
         """
         Test username field left empty
@@ -154,4 +154,5 @@ class TestAuth(BaseTestCase):
             self.assertEqual(
                 'User account successfully created, log in',
                 str(res['message']))
+                
                 

@@ -50,7 +50,8 @@ class RegisterUser(Resource):
                     'Space Error', 'Username should not have space, better user -',
                     400)
             if db.get_order_by_value('users', 'email', email):
-                return response_message('Failed', 'User already registered', 409)
+                return response_message(
+                    'Failed', 'User already registered', 409)
             db.insert_into_user(username, email, location, password)
             if detail['role']:
                 db.update_role(detail['role'], email)
