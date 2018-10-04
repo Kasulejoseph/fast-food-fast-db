@@ -8,32 +8,25 @@ class Database(object):
 
     def __init__(self):
         """initialize db connection """
-        dbname = os.getenv("DBNAME")
-        user = os.getenv("USER")
-        hostname = os.getenv("HOSTNAME")
-        password = os.getenv("PASSWORD")
-        testdb = os.getenv("DBTEST")
-        port = os.getenv("PORT")
-
-        self.connection = psycopg2.connect(
-            """
-            dbname ='{}' user='{}' password ='{}'
-            host='{}' port='{}'
-            """.format(dbname, user, password, hostname, port)
-        )
-        self.connection.autocommit = True
-        self.cursor = self.connection.cursor()
         try:
-            if app.config['TESTING']:
+            if os.getenv("APP_SETTINGS") == "testing":
                 self.connection = psycopg2.connect(
-                    """
-                    dbname ='{}' user='{}' password ='{}'
-                    host='{}' port='5432'
-                    """.format(testdb, user, password, hostname)
+                    str(os.getenv("DATABASE_URL2"))
                 )
-        except Exception as e:
+            elif os.getenv("APP_SETTINGS") == "development":
+                self.connection = psycopg2.connect(
+                    str(os.getenv("DATABASE_URL1"))
+                )
+            else:
+
+                self.connection = psycopg2.connect(
+                    str(os.getenv("DATABASE_URL"))
+                )
+            self.connection.autocommit = True
+            self.cursor = self.connection.cursor()
+        except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-        self.cursor = self.connection.cursor()
+            print("connection failed")
 
     def create_tables(self):
         """ create tables """
@@ -164,4 +157,3 @@ class Database(object):
         tables = ["users", "menu", "orders"]
         for table in tables:
             self.cursor.execute(drop_query.format(table))
-            

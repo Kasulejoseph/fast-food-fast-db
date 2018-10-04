@@ -10,14 +10,14 @@ class Config(object):
 class DevelopmentConfig(Config):
     """Configurations for Development."""
     DEBUG = True
-    DATABASE_URL = 'postgresql://postgres:password@localhost/food_db'
+    # DATABASE_URL='postgresql://postgres:password@localhost/food_db'
 
 
 class TestingConfig(Config):
     """Configurations for Testing."""
     TESTING = True
     DEBUG = True
-    DATABASE_URL = 'postgresql://postgres:password@localhost/test_db'
+    # DATABASE_URL = 'postgresql://postgres:password@localhost/test_db'
 
 
 class ProductionConfig(Config):
