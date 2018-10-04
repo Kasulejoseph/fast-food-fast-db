@@ -11,7 +11,6 @@ food_api = Api(main)
 
 
 class OrderAll(Resource):
-
     """
     Class has all request methods that
     uses the end point /api/v1/orders/   :Admin
