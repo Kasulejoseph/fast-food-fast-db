@@ -16,6 +16,7 @@ class TestingConfig(Config):
     """Configurations for Testing."""
     TESTING = True
     DEBUG = True
+    DATABASE_URL = 'postgresql://postgres:password@localhost:5432/test_db'
 
 
 class ProductionConfig(Config):
