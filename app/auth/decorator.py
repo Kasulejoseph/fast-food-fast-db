@@ -19,10 +19,6 @@ def get_token():
     return token
 
 
-# def role_required(user):
-#     return user
-
-
 def token_required(f):
     """
     Decotator function to ensure that end points are provided by

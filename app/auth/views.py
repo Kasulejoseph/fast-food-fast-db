@@ -69,7 +69,6 @@ class LoginUser(Resource):
                 'Bad request', 'Content-type must be in json', 202)
         detail = request.get_json()
         username = detail['username']
-        # role = detail['role']
         password = generate_password_hash(detail['password'])
         if not username:
             return response_message('Failed', 'Username required', 400)
@@ -80,8 +79,7 @@ class LoginUser(Resource):
             return ({"Failed": "incorect username"}, 401)
         new_user = User(
             db_user[0], db_user[1], db_user[2], db_user[3],
-            db_user[4], db_user[5]
-        )
+            db_user[4], db_user[5])
         if new_user.username == detail['username'] and check_password_hash(
                 new_user.password, detail['password']):
             payload = {
@@ -105,6 +103,6 @@ class LoginUser(Resource):
         return response_message(
             'Failed', 'incorrect password', 401
         )
-# register
+
 api.add_resource(RegisterUser, '/api/v1/auth/signup')
 api.add_resource(LoginUser, '/api/v1/auth/login')

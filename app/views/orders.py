@@ -52,6 +52,12 @@ class OrderPost(Resource):
             return response_message(
                 'Failed', 'Content type must be application/json', 401)
         id_menu = data['meal_id']
+        if not isinstance(id_menu, int):
+            return response_message(
+                'Failed', 'menu ids should be of integer data types only', 401)
+        if id_menu == 0:
+            return response_message(
+                'Failed', 'Zero is not a menu id', 401)
         current_user = current_user.user_id
         order_row = Database.get_order_by_value('menu', 'menu_id', id_menu)
         if not order_row:
@@ -192,8 +198,8 @@ class MenuPost(Resource):
         order = Order(meal, desc, price, status='new')
         meal = order.dish
         if Database.add_to_menu(meal, desc, price):
-            return {'message': 'successfully added to menu'}, 201
-        return {'Failed': 'Error adding a menu'}, 401
+            return {'Failed': 'Error adding a menu'}, 401
+        return {'message': 'successfully added to menu'}, 201
 
 food_api.add_resource(MenuAll, '/api/v1/menu')
 food_api.add_resource(MenuPost, '/api/v1/menu')

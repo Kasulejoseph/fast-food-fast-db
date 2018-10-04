@@ -74,6 +74,22 @@ class BaseTestCase(unittest.TestCase):
             data=json.dumps(data)
             )
 
+    def menu_get(self, id, meal, desc, price):
+        """
+        set the fetch menu test method
+        """
+        data = {
+            "id": id,
+            "meal": meal,
+            "description": desc,
+            "price": price
+        }
+        return self.client.get(
+            '/api/v1/menu',
+            content_type="application/json",
+            data=json.dumps(data)
+            )
+
     def order(self, meal, desc, price, status):
         return {
             "meal": meal,
@@ -81,4 +97,3 @@ class BaseTestCase(unittest.TestCase):
             "price": price,
             "status": status
         }
-

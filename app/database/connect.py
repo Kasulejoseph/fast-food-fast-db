@@ -1,5 +1,6 @@
 import psycopg2
 from flask import current_app as app
+import os
 
 
 class Database(object):
@@ -7,21 +8,28 @@ class Database(object):
 
     def __init__(self):
         """initialize db connection """
+        dbname = os.getenv("DBNAME")
+        user = os.getenv("USER")
+        hostname = os.getenv("HOSTNAME")
+        password = os.getenv("PASSWORD")
+        testdb = os.getenv("DBTEST")
+        port = os.getenv("PORT")
+
         self.connection = psycopg2.connect(
             """
-            dbname ='food_db' user='postgres' password ='password'
-            host='127.0.0.1' port='5432'
-            """
+            dbname ='{}' user='{}' password ='{}'
+            host='{}' port='{}'
+            """.format(dbname, user, password, hostname, port)
         )
         self.connection.autocommit = True
         self.cursor = self.connection.cursor()
         try:
-           if app.config['TESTING']:
+            if app.config['TESTING']:
                 self.connection = psycopg2.connect(
                     """
-                    dbname ='test_db' user='postgres' password ='password'
-                    host='127.0.0.1' port='5432'
-                    """
+                    dbname ='{}' user='{}' password ='{}'
+                    host='{}' port='5432'
+                    """.format(testdb, user, password, hostname)
                 )
         except Exception as e:
             print(e)
