@@ -1,5 +1,6 @@
 from app import app, app_config
 from flask import current_app
+from instance import config
 from app.database.connect import Database as db
 import unittest
 import json
@@ -21,7 +22,13 @@ class BaseTestCase(unittest.TestCase):
             connect.drop_tables()
             connect.create_tables()
 
-    def signup_user(self,username,email,location,password):
+    def tearDown(self):
+        with app.app_context():
+            connect = db()
+            connect.drop_tables()
+            connect.create_tables()
+    
+    def signup_user(self, username, email, location, password, role):
         """
         Method to define user registration details
         """
@@ -29,14 +36,16 @@ class BaseTestCase(unittest.TestCase):
             "username": username,
             "email": email,
             "location": location,
-            "password": password
+            "password": password,
+            "role": role
         }
         return self.client.post(
             '/api/v1/auth/signup',
-            content_type= "application/json",
-            data = json.dumps(register)
+            content_type="application/json",
+            data=json.dumps(register)
             )
-    def login_user(self,username,password):
+
+    def login_user(self, username, password):
         """
         Method to define user login details
         """
@@ -46,28 +55,13 @@ class BaseTestCase(unittest.TestCase):
         }
         return self.client.post(
             '/api/v1/auth/login',
-            content_type = "application/json",
-            data = json.dumps(login)
+            content_type="application/json",
+            data=json.dumps(login)
         )
 
-    # def order_post(self,meal,desc,price):
-    #     """
-    #     Define post attributes and post route
-    #     """
-    #     data = {
-    #         "meal": meal,
-    #         "desc": desc,
-    #         "price": price
-    #     }
-    #     return self.client.post(
-    #         '/api/v1/orders/',
-    #         content_type= "application/json",
-    #         data = json.dumps(data)
-    #         )
- 
-    def order_post(self,meal,desc,price):
+    def menu_post(self, meal, desc, price):
         """
-        Define post attributes and post route
+        Define post attributes and route
         """
         data = {
             "meal": meal,
@@ -75,18 +69,16 @@ class BaseTestCase(unittest.TestCase):
             "price": price
         }
         return self.client.post(
-            '/api/v1/users/orders/',
-            content_type= "application/json",
-            data = json.dumps(data)
+            '/api/v1/menu',
+            content_type="application/json",
+            data=json.dumps(data)
             )
 
-
-
-    def tearDown(self):
-        with app.app_context():
-            connect = db()
-            connect.drop_tables()
-            connect.create_tables()
-    
-
+    def order(self, meal, desc, price, status):
+        return {
+            "meal": meal,
+            "desc": desc,
+            "price": price,
+            "status": status
+        }
 

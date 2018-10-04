@@ -47,6 +47,7 @@ To run tests run this command below in your terminal
 coverage run --source=. -m unittest discover
 ```
 ## API End Points
+
 |           End Point                      |     Resource Accessed    |   Access   | Requirements|
 |   -------------------------------------- |-----------------------|------------|-------------|
 |     api/v1/auth/signup      POST             | Register a user   |   PUBLIC   | username, email, password
@@ -58,3 +59,4 @@ coverage run --source=. -m unittest discover
 |    api/v1/orders/order_id  PUT  | Update the status of an order   |   ADMIN   | order_id
 |     api/v1/menu GET  | Get available menu    |   PUBLIC   | menu_id
 |     api/v1/menu POST | Add a meal option to the menu.    |   ADMIN   | menu_id
+
