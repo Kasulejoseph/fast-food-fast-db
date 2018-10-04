@@ -10,7 +10,6 @@ def get_token():
     if 'Authorization' in request.headers:
         token = request.headers['Authorization']
         token = token.split(" ")[1]
-
     if not token:
         return make_response(jsonify({
             'status': 'failed',
@@ -21,7 +20,7 @@ def get_token():
 
 def token_required(f):
     """
-    Decotator function to ensure that end points are provided by
+    Decotator function to ensure that end points are accessed by
     only authorized users provided they have a valid token
     """
     @wraps(f)
@@ -34,6 +33,8 @@ def token_required(f):
             query = database.get_order_by_value(
                 'users', 'email', data['email']
             )
+            if not query:
+                return {"message": "User not loged in"}, 400
             current_user = User(
                 query[0], query[1], query[2], query[3], query[4], query[5])
         except jwt.ExpiredSignatureError:

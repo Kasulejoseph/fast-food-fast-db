@@ -102,11 +102,13 @@ class UpdateStatus(Resource):
     @token_required
     def put(self, current_user, order_id):
         if role_required() != 'admin':
-            return make_response(jsonify({
+            return ({
                 'Failed': 'You dont have permission to access this route'
-                }), 409)
+                }), 409
 
         data = request.get_json()
+        if not data:
+            return ({"message": "empty request"})
         if request.content_type != 'application/json':
             return response_message(
                 'Failed', 'Content type must be application/json',
