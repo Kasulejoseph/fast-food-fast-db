@@ -164,3 +164,4 @@ class Database(object):
         tables = ["users", "menu", "orders"]
         for table in tables:
             self.cursor.execute(drop_query.format(table))
+            
