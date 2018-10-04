@@ -2,7 +2,7 @@
 Database to back end the fast food fast api
 # Build status
 [![Build Status](https://travis-ci.com/Kasulejoseph/fast-food-fast-db.svg?branch=develop)](https://travis-ci.com/Kasulejoseph/fast-food-fast-db)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/0259c2b03a263108f0ac/test_coverage)](https://codeclimate.com/github/Kasulejoseph/fast-food-fast-db/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/0259c2b03a263108f0ac/maintainability)](https://codeclimate.com/github/Kasulejoseph/fast-food-fast-db/maintainability)
 [![Coverage Status](https://coveralls.io/repos/github/Kasulejoseph/fast-food-fast-db/badge.svg)](https://coveralls.io/github/Kasulejoseph/fast-food-fast-db)
 
 ## Prerequisites
