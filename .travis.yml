@@ -4,7 +4,7 @@ python:
     - "3.6"
 env:
    - APP_SETTINGS=testings
-   - DATABASE_URL=postgresql:postgres
+   - DATABASE_URL=postgresql://postgres:password@localhost/test_db
 
 # install dependency
 services:
