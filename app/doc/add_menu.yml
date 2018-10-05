@@ -1,0 +1,50 @@
+Menu
+---
+tags:
+  -  add item
+parameters:
+  - name: body
+    description: Add a food item to menu
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "meal"
+        - "description"
+        - "price"
+      properties:
+        meal:
+          type: "string"
+          example: "pizza"
+        description:
+          type: "string"
+          example: "good one"
+        price:
+          type: integer
+          format: 
+          example: 90000
+
+responses:
+  201:
+    description: successfully Added
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "successfully added to menu"
+  401:
+    description: Failed to add a menu
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Error adding a menu"
+            - "No field should be left empty"
+            - 'price must be integer'
+            - 'Description and Dish must be string format'
+            - 'order request contains spaces only'

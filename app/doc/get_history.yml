@@ -1,0 +1,27 @@
+Orders
+---
+tags:
+  -  fetch user previous order history
+responses:
+  200:
+    description: previous history
+
+  404:
+    description: Not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - 'You have not ordered from the site yet'
+security:
+  - JWT:
+      description: Pass in jwt token. i.e Bearer <jwt>
+      type: apiKey
+      scheme: bearer
+      name: token
+      in: header
+      bearerFormat: JWT
+
+            

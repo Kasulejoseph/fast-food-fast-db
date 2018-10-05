@@ -154,5 +154,11 @@ class TestAuth(BaseTestCase):
             self.assertEqual(
                 'User account successfully created, log in',
                 str(res['message']))
-                
+
+    def test_invalid_token(self):
+        res = self.client.get('/api/v1/orders/', headers=dict(Authorization='Bearer ywjjkjkjkwe'))
+        data = json.loads(res.data.decode())
+        self.assertIn("Invalid token. Please log in again.", str(data))
+        self.assertEqual(res.status_code, 401)
+
                 

@@ -1,0 +1,37 @@
+Orders
+---
+tags:
+  -  update order
+parameters:
+  - name: body
+    description: Admin Update order status
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "status"
+      properties:
+        status:
+          type: "string"
+          example: "complete"
+
+responses:
+  200:
+    description: successfully submitted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Order successfully submited"
+  401:
+    description: invalid inputs
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - 'Status should not be empty or have only spaces'

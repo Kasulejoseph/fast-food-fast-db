@@ -13,10 +13,9 @@ before_script:
 
 install: 
   - pip install -r requirements.txt
-  - pip install pytest-cov
 
 script:
-  - coverage run --source=. -m unittest discover
+  - nosetests -v --with-coverage --cover-package="app"
   - coverage report
 
 after_success: 
