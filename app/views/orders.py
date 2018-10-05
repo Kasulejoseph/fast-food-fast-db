@@ -71,8 +71,8 @@ class OrderPost(Resource):
             Database.insert_into_orders(
                 current_user, id_menu, dish, desc, price, status='new')
             return response_message('Success', 'Order successfully submited', 200)
-        except KeyError as e:
-            return ({'KeyError': str(e)})
+        except KeyError as e:  # pragma: no cover
+            return ({'KeyError': str(e)})  # pragma: no cover
     
 
 class OrderById(Resource):
