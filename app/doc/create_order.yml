@@ -1,0 +1,47 @@
+Orders
+---
+tags:
+  -  Create Order
+parameters:
+  - name: body
+    description: User request for an order
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "meal_id"
+      properties:
+        meal_id:
+          type: integer
+          example: 1
+
+responses:
+  201:
+    description: successfully submitted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Order successfully submited"
+  401:
+    description: invalid inputs
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - 'menu ids should be of integer data types only'
+            - 'Zero is not a menu id'
+  404:
+    description: Not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "No item for that id"

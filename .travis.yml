@@ -16,7 +16,7 @@ install:
   - pip install pytest-cov
 
 script:
-  - coverage run --source=. -m unittest discover
+  - coverage run --source=app -m unittest discover
   - coverage report
 
 after_success: 

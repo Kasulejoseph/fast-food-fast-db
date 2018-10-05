@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, Blueprint, make_response, json
 from flask_restful import Api, Resource, abort
+from flasgger import swag_from
 from app.database.connect import Database
 from app.auth.decorator import token_required, role_required
 from app.auth.decorator import response, response_message
@@ -15,6 +16,7 @@ class OrderAll(Resource):
     Class has all request methods that
     uses the end point /api/v1/orders/   :Admin
     """
+    @swag_from('../doc/get_all_orders.yml')
     @token_required
     def get(self, current_user):
         if role_required() == 'admin':
@@ -44,6 +46,7 @@ class OrderPost(Resource):
     Class for posting an order request by the user
     :User
     """
+    @swag_from('../doc/create_order.yml')
     @token_required
     def post(current_user, menu_id):
         try:
@@ -70,14 +73,14 @@ class OrderPost(Resource):
             return response_message('Success', 'Order successfully submited', 200)
         except KeyError as e:
             return ({'KeyError': str(e)})
-        
-
+    
 
 class OrderById(Resource):
     """
     Admin fetch a specific order from the order list
     :Admin
     """
+    @swag_from('../doc/create_order.yml')
     @token_required
     def get(self, current_user, order_id):
         if role_required() != 'admin':
@@ -104,6 +107,7 @@ class UpdateStatus(Resource):
     status: New->processing->cancelled->complete
     :Admin
     """
+    @swag_from('../doc/update_order.yml')
     @token_required
     def put(self, current_user, order_id):
         if role_required() != 'admin':
@@ -136,6 +140,7 @@ class UserHistory(Resource):
     """
     user can view all the order histories
     """
+    @swag_from('../doc/get_history.yml')
     @token_required
     def get(current_user, user):
         user_id = current_user.user_id
@@ -163,6 +168,7 @@ class MenuAll(Resource):
     end point /api/v1/menu/
     :User, Admin
     """
+    @swag_from('../doc/get_menu.yml')
     def get(self):
         all = Database.fetch_menu()
         menu_list = []
@@ -184,6 +190,7 @@ class MenuPost(Resource):
     Class for posting an order request by the user
     :User
     """
+    @swag_from('../doc/add_menu.yml')
     def post(self):
         try:
             data = request.get_json()

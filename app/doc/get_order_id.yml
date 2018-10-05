@@ -1,0 +1,35 @@
+Orders
+---
+tags:
+  -  Get One
+responses:
+  200:
+    description: Admin gets an order by order id
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Order by:user"
+
+  404:
+    description: Not found
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "No order by that Id"
+  409:
+    description: Not permited
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - 'You dont have permission to access this route'
+
+            

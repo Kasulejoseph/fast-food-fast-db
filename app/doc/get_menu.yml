@@ -1,0 +1,26 @@
+Menu
+---
+tags:
+  -  Get food items on menu
+responses:
+  200:
+    description: menu today
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "On menu today"
+
+  404:
+    description: Empty menu
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "nothing on menu today"
+
+            

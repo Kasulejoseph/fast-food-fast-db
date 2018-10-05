@@ -1,0 +1,58 @@
+Registration
+---
+tags:
+  -  User registration
+parameters:
+  - name: body
+    description: Contains user registration details
+    in: body
+    required: true
+    schema:
+      type: object
+      required:
+        - "username"
+        - "email"
+        - "password"
+      properties:
+        username:
+          type: "string"
+          example: "ivan"
+        email:
+          type: "string"
+          example: "kasule@gmail.com"
+        password:
+          type: "string"
+          format: password
+          example: "1111111"
+
+responses:
+  201:
+    description: User account successfully created log in
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Successfully registered"
+
+  202:
+    description: Failed to register
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "User account successfully created, log in"
+  409:
+    description: Failed to add user
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "Email already in use"
+
+            

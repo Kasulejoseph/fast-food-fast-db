@@ -1,0 +1,26 @@
+Orders
+---
+tags:
+  -  Get all orders requests from users
+responses:
+  200:
+    description: order list
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "success"
+
+  409:
+    description: Not permitted
+    schema:
+      type: object
+      properties:
+        message:
+          type: string
+          enum:
+            - "You dont have permission to access this route"
+
+            

@@ -8,6 +8,7 @@ from app.auth.decorator import response, response_message
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_restful import Api, Resource
 from flask import make_response, Blueprint, request, jsonify
+from flasgger import swag_from
 auth = Blueprint('auth', __name__)
 db = Database()
 api = Api(auth)
@@ -17,6 +18,7 @@ class RegisterUser(Resource):
     """
     Class to register a user via api
     """
+    @swag_from('../doc/signup.yml')
     def post(self):
         """
         User creates an account
@@ -65,6 +67,7 @@ class LoginUser(Resource):
     """
     Class to register a user via api
     """
+    @swag_from('../doc/login.yml')
     def post(self):
         """
         User login if he supplies correct credentials
