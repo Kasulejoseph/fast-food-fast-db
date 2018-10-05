@@ -62,7 +62,5 @@ class TestOrder(BaseTestCase):
                 'no orders posted yet', str(data))
             self.assertEqual(result.status_code, 404)
 
-    def test_ca
-
 
 
