@@ -203,6 +203,30 @@ class TestOrder(BaseTestCase):
             self.assertEqual(data['message'], 'Order successfully submited')
             self.assertEqual(data['status'], 'Success')
 
+    def test_nothing_on_menu(self):
+        Database().fetch_menu()
+        result = self.client.get(
+                '/api/v1/menu',
+                content_type="application/json"
+            )
+        data = json.loads(result.data.decode())
+        self.assertEqual(result.status_code, 404)
+        self.assertIn('nothing on menu today', str(data))
 
+    def test_all_menu_items_fetched_successfully(self):
+        item = {
+            "meal": "katogo",
+            "description": "all",
+            "price": 2000
+        }
+        Database().add_to_menu(item['meal'], item['description'], item['price'])
+        Database().fetch_menu()
+        result = self.client.get(
+                '/api/v1/menu',
+                content_type="application/json",
+                data=json.dumps(item)
+            )
+        data = json.loads(result.data.decode())
+        self.assertEqual(result.status_code, 200)
 
 
