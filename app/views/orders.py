@@ -61,7 +61,7 @@ class OrderPost(Resource):
             if id_menu == 0:
                 return response_message(
                     'Failed', 'Zero is not a menu id', 401)
-            current_user = current_user.user_id
+            current_user = current_user.user_id  
             order_row = Database.get_order_by_value('menu', 'menu_id', id_menu)
             if not order_row:
                 return ({"Message": "No item for that id"}, 404)
