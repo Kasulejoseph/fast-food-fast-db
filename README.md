@@ -61,4 +61,11 @@ coverage run --source=. -m unittest discover
 |     api/v1/menu GET  | Get available menu    |   PUBLIC   | menu_id
 |     api/v1/menu POST | Add a meal option to the menu.    |   ADMIN   | menu_id
 
+**End points as on swagger**
 ![swagger](https://user-images.githubusercontent.com/32167860/46521345-49bd9b80-c84d-11e8-9049-7c37d04d5cd5.png)
+
+**User registration and screenshot**
+![signup](https://user-images.githubusercontent.com/32167860/46570777-77503500-c972-11e8-8ff0-c3979f6fbf1c.png)
+
+**Login details token generation**
+![login](https://user-images.githubusercontent.com/32167860/46570799-ce560a00-c972-11e8-869d-196a1004a601.png)
