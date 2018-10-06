@@ -1,5 +1,7 @@
 # fast-food-fast-db
-Database to back end the fast food fast api
+Database to hold data the api
+
+The app is hosted here on [heroku](https://fast-food-fast-db.herokuapp.com/api/v1/menu/)
 # Build status
 [![Build Status](https://travis-ci.com/Kasulejoseph/fast-food-fast-db.svg?branch=develop)](https://travis-ci.com/Kasulejoseph/fast-food-fast-db)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0259c2b03a263108f0ac/maintainability)](https://codeclimate.com/github/Kasulejoseph/fast-food-fast-db/maintainability)
