@@ -26,7 +26,6 @@ class Database(object):
             self.cursor = self.connection.cursor()
         except(Exception, psycopg2.DatabaseError) as e:
             print(e)
-            print("connection failed")
 
     def create_tables(self):
         """ create tables """
