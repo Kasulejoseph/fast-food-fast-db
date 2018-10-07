@@ -1,11 +1,11 @@
 # fast-food-fast-db
 Database to hold data the api
 
-The app is hosted here on [heroku](https://fast-food-fast-db.herokuapp.com/api/v1/menu/)
+The app is hosted here on [heroku](https://fast-food-fast-db.herokuapp.com/apidocs/)
 # Build status
 [![Build Status](https://travis-ci.com/Kasulejoseph/fast-food-fast-db.svg?branch=develop)](https://travis-ci.com/Kasulejoseph/fast-food-fast-db)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0259c2b03a263108f0ac/maintainability)](https://codeclimate.com/github/Kasulejoseph/fast-food-fast-db/maintainability)
-[![Coverage Status](https://coveralls.io/repos/github/Kasulejoseph/fast-food-fast-db/badge.svg?branch=develop)](https://coveralls.io/github/Kasulejoseph/fast-food-fast-db?branch=develop)
+[![Coverage Status](https://coveralls.io/repos/github/Kasulejoseph/fast-food-fast-db/badge.svg?=develop)](https://coveralls.io/github/Kasulejoseph/fast-food-fast-db)
 ## Prerequisites
 ``` - Python3.6 
    - Flask
@@ -61,3 +61,11 @@ coverage run --source=. -m unittest discover
 |     api/v1/menu GET  | Get available menu    |   PUBLIC   | menu_id
 |     api/v1/menu POST | Add a meal option to the menu.    |   ADMIN   | menu_id
 
+**End points as on swagger**
+![swagger](https://user-images.githubusercontent.com/32167860/46521345-49bd9b80-c84d-11e8-9049-7c37d04d5cd5.png)
+
+**User registration and screenshot**
+![signup](https://user-images.githubusercontent.com/32167860/46570777-77503500-c972-11e8-8ff0-c3979f6fbf1c.png)
+
+**Login details token generation**
+![login](https://user-images.githubusercontent.com/32167860/46570799-ce560a00-c972-11e8-869d-196a1004a601.png)
