@@ -96,7 +96,7 @@ class OrderById(Resource):
                 }
             user = Database.get_order_by_value('users', 'user_id', order_id)
             return ({
-                'order': response, 'Order BY': role_required()
+                'order': response, 'BY': role_required()
                 }), 200
         return response_message('Failed', 'No order by that Id', 404)
 
