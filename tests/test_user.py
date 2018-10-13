@@ -161,4 +161,34 @@ class TestAuth(BaseTestCase):
         self.assertIn("Invalid token. Please log in again.", str(data))
         self.assertEqual(res.status_code, 401)
 
+    def test_missing_username_keyword(self):
+        register = {
+            "email": "email@gmail.com",
+            "location": "location",
+            "password": "password",
+            "role": "user"
+        }
+        rs = self.client.post(
+            '/api/v1/auth/signup',
+            content_type="application/json",
+            data=json.dumps(register)
+            )
+        data = json.loads(rs.data.decode())
+        self.assertEqual(data['KeyError'],"'username'" )
+
+    def test_password_keyword_missing(self):
+        login = {
+            "username": "my name"
+        }
+        rv = self.client.post(
+            '/api/v1/auth/login',
+            content_type="application/json",
+            data=json.dumps(login)
+        )
+        data = json.loads(rv.data.decode())
+        self.assertEqual(data['KeyError'],"'password'" )
+
+        
+
+
                 

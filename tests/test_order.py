@@ -273,7 +273,7 @@ class TestOrder(BaseTestCase):
             self.assertEqual(data['status'], 'Failed')
             self.assertTrue(data['message'] == 'No order by that Id')
 
-    def test_admin_get_order_request_user_users_by_id(self):
+    def test_admin_get_order_request_of_users_by_id(self):
         """
         Test admin can get all users who requested for
         the same food item, In other words he can
@@ -305,6 +305,200 @@ class TestOrder(BaseTestCase):
             self.assertEqual(result.status_code, 200)
             self.assertEqual(data['BY'], 'admin')
             self.assertIn("'meal': 'katogo'", str(data))
+
+    def test_user_cannot_update_order_status(self):
+        """
+        Order status can only be updated by admin
+        """
+        with self.client:
+            self.signup_user(
+                "joseph", "joseph@gmail.com", "kansanga", "12389894", "user")
+            response = self.login_user("joseph", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data = json.dumps({'status':'complete'})
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 409)
+            self.assertEqual(
+                data['Failed'], 'You dont have permission to access this route')
+
+    def test_nothing_passed_in_status_request(self):
+        with self.client:
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data = json.dumps({})
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 404)
+            self.assertEqual(data['message'], "empty request")
+
+    def test_status_update_request_not_in_json_format(self):
+        with self.client:
+            status = {"status":"complete"}
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+
+            Database().add_to_menu("katogo", "all kind", 6000)
+            self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="text",
+                data=json.dumps(status)
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 401)
+            self.assertEqual(
+                data['message'], 'Content type must be application/json')
+            self.assertEqual(data['status'], 'Failed')
+
+    def test_is_not_string_order_status_update(self):
+        with self.client:
+            status = {"status":True}
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+
+            Database().add_to_menu("katogo", "all kind", 6000)
+            self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps(status)
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 400)
+            self.assertEqual(
+                data['message'], 'Status must only be string')
+            self.assertEqual(data['status'], 'Type Error')
+
+    def test_status_should_not_be_empty_string(self):
+        with self.client:
+            status = {"status":"     "}
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+
+            Database().add_to_menu("katogo", "all kind", 6000)
+            self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps(status)
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 401)
+            self.assertEqual(
+                data['message'], 'Status should not be empty or have only spaces')
+            self.assertEqual(data['status'], 'Failed')
+
+    def test_admi_sucessfully_update_order_status(self):
+        with self.client:
+            status = {"status":"complete"}
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+
+            Database().add_to_menu("katogo", "all kind", 6000)
+            self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps(status)
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 200)
+            self.assertEqual(
+                data['message'], 'Order succcessfully Updated')
+            self.assertEqual(data['status'], 'message')
+
+    def test_invalid_order_status(self):
+        with self.client:
+            status = {"status":"Etuuse"}
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+
+            Database().add_to_menu("katogo", "all kind", 6000)
+            self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            result = self.client.put(
+                '/api/v1/orders/1',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps(status)
+            )
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 200)
+            self.assertEqual(
+                data['message'], 'Invalid Update status name')
+            self.assertEqual(data['status'], 'message')
+
+
+
+
+
+
+
+
+
 
 
 

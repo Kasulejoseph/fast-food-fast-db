@@ -113,7 +113,7 @@ class LoginUser(Resource):
                         token.decode('UTF-8'), 200)
             return response_message(
                 'Failed', 'incorrect password', 401)
-        except KeyError as e:
+        except KeyError as e: 
             return ({'KeyError': str(e)})
 
 api.add_resource(RegisterUser, '/api/v1/auth/signup')

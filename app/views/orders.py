@@ -61,7 +61,7 @@ class OrderPost(Resource):
             if id_menu == 0:
                 return response_message(
                     'Failed', 'Zero is not a menu id', 401)
-            current_user = current_user.user_id  
+            current_user = current_user.user_id
             order_row = Database.get_order_by_value('menu', 'menu_id', id_menu)
             if not order_row:
                 return ({"Message": "No item for that id"}, 404)
@@ -70,10 +70,11 @@ class OrderPost(Resource):
             price = order_row[3]
             Database.insert_into_orders(
                 current_user, id_menu, dish, desc, price, status='new')
-            return response_message('Success', 'Order successfully submited', 200)
+            return response_message(
+                'Success', 'Order successfully submited', 200)
         except KeyError as e:  # pragma: no cover
             return ({'KeyError': str(e)})  # pragma: no cover
-    
+
 
 class OrderById(Resource):
     """
@@ -114,24 +115,23 @@ class UpdateStatus(Resource):
             return ({
                 'Failed': 'You dont have permission to access this route'
                 }), 409
-
-        data = request.get_json()
-        if not data:
-            return ({"message": "empty request"})
         if request.content_type != 'application/json':
             return response_message(
                 'Failed', 'Content type must be application/json',
                 401)
-
-        if not isinstance(data['status'], str):
+        status = request.get_json()
+        if not status:
+            return ({"message": "empty request"}), 404
+        
+        if not isinstance(status['status'], str):
             return response_message(
                 'Type Error', 'Status must only be string',
-                400)    
-        if data['status'].isspace() or len(data['status']) == 0:
+                400) 
+        if status['status'].isspace() or len(status['status']) == 0:
             return response_message(
                 'Failed', 'Status should not be empty or have only spaces',
                 401)
-        to_update = Database.update_order_status(data['status'], order_id)
+        to_update = Database.update_order_status(status['status'], order_id)
         if to_update:
             return response_message('message', to_update, 200)
 
@@ -145,21 +145,21 @@ class UserHistory(Resource):
     def get(current_user, user):
         user_id = current_user.user_id
         order_all = Database.get_order_history_for_a_user(user_id)
-        order_list = []
+        orders = []
         if not order_all:
             return {'error': 'You have not ordered from the site yet'}, 404
-        for row in order_all:
-            order_dict = {
-                "order_id": row[0],
-                "menu_id": row[1],
-                'user_id': row[2],
-                "meal": row[3],
-                "desc": row[4],
-                "price": row[5],
-                "status": row[6]
+        for order in order_all:
+            order_dic = {
+                "order_id": order[0],
+                "menu_id": order[1],
+                'user_id': order[2],
+                "meal": order[3],
+                "desc": order[4],
+                "price": order[5],
+                "status": order[6]
             }
-            order_list.append(order_dict)
-        return {'Requested': order_list}, 200
+            orders.append(order_dic)
+        return {'Requested': orders}, 200
 
 
 class MenuAll(Resource):
@@ -209,8 +209,8 @@ class MenuPost(Resource):
             if len(meal) == 0 or len(desc) == 0 or price == 0:
                 return response_message(
                     'Failed', 'No field should be left empty', 401)
-            order = Order(meal, desc, price, status='new')
-            meal = order.dish
+            # order = Order(meal, desc, price, status='new')
+            # meal = order.dish
             if Database.add_to_menu(meal, desc, price):
                 return {'Failed': 'Error adding a menu'}, 401
             return {'message': 'successfully added to menu'}, 201
