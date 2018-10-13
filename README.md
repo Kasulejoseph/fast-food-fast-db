@@ -5,7 +5,7 @@ The app is hosted here on [heroku](https://fast-food-fast-db.herokuapp.com/apido
 # Build status
 [![Build Status](https://travis-ci.com/Kasulejoseph/fast-food-fast-db.svg?branch=develop)](https://travis-ci.com/Kasulejoseph/fast-food-fast-db)
 [![Maintainability](https://api.codeclimate.com/v1/badges/0259c2b03a263108f0ac/maintainability)](https://codeclimate.com/github/Kasulejoseph/fast-food-fast-db/maintainability)
-[![Coverage Status](https://coveralls.io/repos/github/Kasulejoseph/fast-food-fast-db/badge.svg?=develop)](https://coveralls.io/github/Kasulejoseph/fast-food-fast-db)
+[![Coverage Status](https://coveralls.io/repos/github/Kasulejoseph/fast-food-fast-db/badge.svg?branch=develop)](https://coveralls.io/github/Kasulejoseph/fast-food-fast-db?branch=develop)
 ## Prerequisites
 ``` - Python3.6 
    - Flask
