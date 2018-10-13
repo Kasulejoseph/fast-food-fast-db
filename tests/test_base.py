@@ -97,3 +97,4 @@ class BaseTestCase(unittest.TestCase):
             "price": price,
             "status": status
         }
+

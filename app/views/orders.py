@@ -209,8 +209,8 @@ class MenuPost(Resource):
             if len(meal) == 0 or len(desc) == 0 or price == 0:
                 return response_message(
                     'Failed', 'No field should be left empty', 401)
-            # order = Order(meal, desc, price, status='new')
-            # meal = order.dish
+            order = Order(meal, desc, price, status='new')
+            meal = order.dish
             if Database.add_to_menu(meal, desc, price):
                 return {'Failed': 'Error adding a menu'}, 401
             return {'message': 'successfully added to menu'}, 201

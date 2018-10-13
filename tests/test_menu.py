@@ -87,4 +87,4 @@ class TestOrder(BaseTestCase):
             data = json.loads(result.data.decode())
             self.assertEqual(result.status_code, 200)
             self.assertIn("Onmenu", str(data))
-            
+          
