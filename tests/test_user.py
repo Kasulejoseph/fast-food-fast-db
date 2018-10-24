@@ -188,6 +188,34 @@ class TestAuth(BaseTestCase):
         data = json.loads(rv.data.decode())
         self.assertEqual(data['KeyError'],"'password'" )
 
+    def test_all_users_details(self):
+         with self.client:
+            result = self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12347809", "admin")
+            self.assertEqual(result.status_code, 201)
+            res = json.loads(result.data.decode())
+            self.assertTrue(res['status'] == 'Success')
+            self.assertEqual(
+                'User account successfully created, log in',
+                str(res['message']))
+
+            users = Database().get_users()
+            user_dict ={
+            "user_id": 1,
+            "username": "Erick",
+            "email": "erick@gmail.com",
+            "location": "luwero",
+            "role": "user"
+            }
+            rs = self.client.get(
+                '/api/v1/users',
+                content_type="application/json",
+                data=json.dumps(user_dict)
+            )
+            data = json.loads(rs.data.decode())
+            self.assertEqual(rs.status_code, 200)
+            self.assertIn("'location': 'kansanga'", str(data['users']))
+
         
 
 

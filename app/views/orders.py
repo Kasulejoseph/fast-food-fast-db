@@ -92,7 +92,7 @@ class OrderById(Resource):
         order_one = Database.get_order_by_value('orders', 'order_id', order_id)
         if order_one:
             response = {
-                'order_id': order_one[0], 'meal': order_one[3],
+                'order_id': order_one[0], 'user_id': order_one[1], 'meal': order_one[3],
                 'desc': order_one[4], 'price': order_one[5]
                 }
             user = Database.get_order_by_value('users', 'user_id', order_id)
@@ -149,16 +149,19 @@ class UserHistory(Resource):
         if not order_all:
             return {'error': 'You have not ordered from the site yet'}, 404
         for order in order_all:
-            order_dic = {
-                "order_id": order[0],
-                "menu_id": order[1],
-                'user_id': order[2],
-                "meal": order[3],
-                "desc": order[4],
-                "price": order[5],
-                "status": order[6]
-            }
-            orders.append(order_dic)
+            try:
+                order_dic = {
+                    "order_id": order[0],
+                    "menu_id": order[1],
+                    'user_id': order[2],
+                    "meal": order[3],
+                    "desc": order[4],
+                    "price": order[5],
+                    "status": order[6]
+                }
+                orders.append(order_dic)
+            except IndexError as e:
+                return {'error': 'You have not ordered from the site yet'}, 404
         return {'Requested': orders}, 200
 
 
@@ -213,7 +216,7 @@ class MenuPost(Resource):
             meal = order.dish
             if Database.add_to_menu(meal, desc, price):
                 return {'Failed': 'Error adding a menu'}, 401
-            return {'message': 'successfully added to menu'}, 201
+            return ({'message': 'successfully added to menu'}, 201)
         except KeyError as e:
             return ({'KeyError': str(e)})
 

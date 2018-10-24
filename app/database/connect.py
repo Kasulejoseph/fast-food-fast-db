@@ -96,6 +96,14 @@ class Database(object):
             order_list.append(order)
         return order_list
 
+    def get_users(self):
+        self.cursor.execute("SELECT * FROM users")
+        users = self.cursor.fetchall()
+        user_list = []
+        for user in users:
+            user_list.append(user)
+        return user_list
+
     def get_order_by_value(self, table_name, table_colum, value):
         """
         Function  gets items from the

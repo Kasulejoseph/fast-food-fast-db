@@ -82,12 +82,13 @@ class LoginUser(Resource):
                 return ({"Failed": "Empty request"}, 400)
             username = detail['username']
             password = generate_password_hash(detail['password'])
-            if not username and password:
+            if not username and not password:
                 return response_message(
                     'Failed', 'Username and password are required', 400)
             db_user = db.get_order_by_value('users', 'username', username)
             if not db_user:
-                return ({"Failed": "incorect username"}, 401)
+                return response_message(
+                    'Failed', 'incorect username', 401)
             new_user = User(
                 db_user[0], db_user[1], db_user[2], db_user[3],
                 db_user[4], db_user[5])
@@ -116,5 +117,21 @@ class LoginUser(Resource):
         except KeyError as e: 
             return ({'KeyError': str(e)})
 
+class userDetails(Resource):
+    def get(self):
+        users = Database().get_users()
+        user_list = []
+        for user in users:
+            user_dict ={
+            "user_id": user[0],
+            "username": user[1],
+            "email": user[2],
+            "location": user[3],
+            "role": user[5]
+            }
+            user_list.append(user_dict)
+        return ({"users": user_list}), 200
+
 api.add_resource(RegisterUser, '/api/v1/auth/signup')
 api.add_resource(LoginUser, '/api/v1/auth/login')
+api.add_resource(userDetails, '/api/v1/users')
