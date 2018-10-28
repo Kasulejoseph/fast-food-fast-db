@@ -1,11 +1,11 @@
 from flask import Flask, request, jsonify, Blueprint, make_response, json
 from flask_restful import Api, Resource, abort
 from flasgger import swag_from
+from werkzeug import secure_filename
 from app.database.connect import Database
 from app.auth.decorator import token_required, role_required
 from app.auth.decorator import response, response_message
 from app.models.model import Order
-
 main = Blueprint('main', __name__)
 Database = Database()
 food_api = Api(main)
@@ -190,13 +190,18 @@ class MenuAll(Resource):
 
 class MenuPost(Resource):
     """
-    Class for posting an order request by the user
-    :User
+    Admin add items to menu
     """
+    @token_required
     @swag_from('../doc/add_menu.yml')
-    def post(self):
+    def post(self, current_user):
+        if role_required() != 'admin':
+            return ({
+                'Failed': 'You dont have permission to add food items to menu'
+                }), 409
         try:
             data = request.get_json()
+            # image = data['image']
             meal = data['meal']
             desc = data['description']
             price = data['price']
@@ -214,15 +219,36 @@ class MenuPost(Resource):
                     'Failed', 'No field should be left empty', 401)
             order = Order(meal, desc, price, status='new')
             meal = order.dish
+            # file = os.path.join("UPLOAD_FOLDER", file)
+            # image.append(secure_filename(image.filename)) 
+            # print(image)
             if Database.add_to_menu(meal, desc, price):
                 return {'Failed': 'Error adding a menu'}, 401
             return ({'message': 'successfully added to menu'}, 201)
         except KeyError as e:
             return ({'KeyError': str(e)})
 
+
+class DeleteMenu(Resource):
+    """
+    admin deletes item from the menu
+    """
+    @token_required
+    def delete(self, current_user, id):
+        if role_required() != 'admin':
+            return ({
+                'Failed': 'You dont have permission to delete items from menu'
+                }), 409
+        one = Database.get_order_by_value('menu', 'menu_id', id)
+        if one:
+            Database.delete_table_column('menu', 'menu_id', id)
+            return ({"success": "menu item successfully deleted"}, 200)
+        return ({"failed": "Please provide a valid menu Id"}, 400)
+        
+
 food_api.add_resource(MenuAll, '/api/v1/menu')
 food_api.add_resource(MenuPost, '/api/v1/menu')
-
+food_api.add_resource(DeleteMenu, '/api/v1/menu/<int:id>')
 food_api.add_resource(OrderAll, '/api/v1/orders/')
 food_api.add_resource(OrderPost, '/api/v1/users/orders/')
 food_api.add_resource(OrderById, '/api/v1/orders/<int:order_id>')

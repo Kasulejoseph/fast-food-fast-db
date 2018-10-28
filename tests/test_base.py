@@ -59,7 +59,7 @@ class BaseTestCase(unittest.TestCase):
             data=json.dumps(login)
         )
 
-    def menu_post(self, meal, desc, price):
+    def menu_post(self, meal, desc, price, token):
         """
         Define post attributes and route
         """
@@ -70,6 +70,7 @@ class BaseTestCase(unittest.TestCase):
         }
         return self.client.post(
             '/api/v1/menu',
+            headers=dict(Authorization='Bearer' " " + token),
             content_type="application/json",
             data=json.dumps(data)
             )
@@ -89,6 +90,16 @@ class BaseTestCase(unittest.TestCase):
             content_type="application/json",
             data=json.dumps(data)
             )
+
+    def menu_delete(self, token, id):
+        """
+        test method for deleting an item from menu
+        """
+        return self.client.delete(
+            '/api/v1/menu/1',
+            headers=dict(Authorization='Bearer' " " + token),
+            content_type = "application/json"
+        )
 
     def order(self, meal, desc, price, status):
         return {

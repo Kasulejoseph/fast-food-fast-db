@@ -159,6 +159,12 @@ class Database(object):
         self.cursor.execute(query)
         self.connection.commit()
 
+    def delete_table_column(self, table_name, table_colum, id):
+        delete_query = "DELETE from {} WHERE {} = '{}';".format(
+             table_name, table_colum, id)
+        self.cursor.execute(delete_query)
+        self.connection.commit()
+
     def drop_tables(self):
         drop_query = "DROP TABLE IF EXISTS {0} CASCADE"
         tables = ["users", "menu", "orders"]

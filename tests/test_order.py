@@ -184,22 +184,6 @@ class TestOrder(BaseTestCase):
             self.assertEqual(result.status_code, 404)
             self.assertIn("No item for that id", str(data))
 
-    def test_menu_item_created(self):
-        item = {
-            "meal": "katogo",
-            "description": "all",
-            "price": 2000
-        }
-        Database().add_to_menu(item['meal'], item['description'], item['price'])
-        result = self.client.post(
-                '/api/v1/menu',
-                content_type="application/json",
-                data=json.dumps(item)
-            )
-        data = json.loads(result.data.decode())
-        self.assertEqual(result.status_code, 201)
-        self.assertIn('successfully added to menu', str(data))
-
     def test_user_successfull_make_an_order(self):
         with self.client:
             self.signup_user(
@@ -490,6 +474,7 @@ class TestOrder(BaseTestCase):
             self.assertEqual(
                 data['message'], 'Invalid Update status name')
             self.assertEqual(data['status'], 'message')
+
 
 
 
