@@ -194,28 +194,6 @@ class TestOrder(BaseTestCase):
             self.assertEqual(
                 data['Failed'], 'You dont have permission to add food items to menu')
 
-    def test_normal_user_cant_remove_item_from_menu(self):
-        with self.client:
-            self.signup_user(
-                "kasule", "kasule@gmail.com", "kansanga", "12389894", "admin")
-            response = self.login_user("kasule", "12389894")
-            res = json.loads(response.data.decode())
-            self.assertTrue(res['auth_token'])
-            token = res['auth_token']
-            order = self.order("chicken", "roasted", 8990, 'new')
-            self.assertTrue(order)
-            rs = self.menu_post("chicken", "flied", 5000, token)
-            Database().add_to_menu("chicken", "flied", 5000)
-            data = json.loads(rs.data.decode())
-            self.assertEqual(rs.status_code, 201)
-            self.assertIn("successfully added to menu", str(data))
-
-            rv = self.menu_delete(token, 1)
-            data2 = json.loads(rv.data.decode())
-            self.assertEqual(
-                data2['Failed'], 'You dont have permission to delete items from menu')
-            self.assertEqual(rv.status_code, 409)
-
 
 
 
