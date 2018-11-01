@@ -21,10 +21,6 @@ class OrderAll(Resource):
     @token_required
     def get(self, current_user):
         if role_required() == 'admin':
-            def default(o):
-                if type(o) is datetime.date or type(o) is datetime.datetime:
-                    return o.isoformat()
-
             all = Database.get_all_orders()
             all_order_list = []
             if not all:

@@ -96,7 +96,8 @@ class TestAuth(BaseTestCase):
             data=json.dumps(dict({'status': 'register'}))
         )
         self.assertEqual(rv.status_code, 202)
-        self.assertIn('"message": "Content-type must be in json"', str(rv.data))
+        self.assertIn(
+            '"message": "Content-type must be in json"', str(rv.data))
 
     def test_content_type_4_login_not_json(self):
         """
@@ -156,7 +157,9 @@ class TestAuth(BaseTestCase):
                 str(res['message']))
 
     def test_invalid_token(self):
-        res = self.client.get('/api/v1/orders/', headers=dict(Authorization='Bearer ywjjkjkjkwe'))
+        res = self.client.get(
+            '/api/v1/orders/',
+            headers=dict(Authorization='Bearer ywjjkjkjkwe'))
         data = json.loads(res.data.decode())
         self.assertIn("Invalid token. Please log in again.", str(data))
         self.assertEqual(res.status_code, 401)
@@ -174,7 +177,7 @@ class TestAuth(BaseTestCase):
             data=json.dumps(register)
             )
         data = json.loads(rs.data.decode())
-        self.assertEqual(data['KeyError'],"'username'" )
+        self.assertEqual(data['KeyError'], "'username'")
 
     def test_password_keyword_missing(self):
         login = {
@@ -186,10 +189,10 @@ class TestAuth(BaseTestCase):
             data=json.dumps(login)
         )
         data = json.loads(rv.data.decode())
-        self.assertEqual(data['KeyError'],"'password'" )
+        self.assertEqual(data['KeyError'], "'password'")
 
     def test_all_users_details(self):
-         with self.client:
+        with self.client:
             result = self.signup_user(
                 "kasule", "kasule@gmail.com", "kansanga", "12347809", "admin")
             self.assertEqual(result.status_code, 201)
@@ -200,12 +203,12 @@ class TestAuth(BaseTestCase):
                 str(res['message']))
 
             users = Database().get_users()
-            user_dict ={
-            "user_id": 1,
-            "username": "Erick",
-            "email": "erick@gmail.com",
-            "location": "luwero",
-            "role": "user"
+            user_dict = {
+                "user_id": 1,
+                "username": "Erick",
+                "email": "erick@gmail.com",
+                "location": "luwero",
+                "role": "user"
             }
             rs = self.client.get(
                 '/api/v1/users',

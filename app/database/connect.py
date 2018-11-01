@@ -10,11 +10,11 @@ class Database(object):
         """initialize db connection """
         try:
             if os.getenv("APP_SETTINGS") == "testing":
-                self.connection = psycopg2.connect(
+                self.connection = psycopg2.connect(      # pragma: no cover
                     str(os.getenv("DATABASE_URL2"))
                 )
             elif os.getenv("APP_SETTINGS") == "development":
-                self.connection = psycopg2.connect(
+                self.connection = psycopg2.connect(       # pragma: no cover
                     str(os.getenv("DATABASE_URL1"))
                 )
             else:
@@ -24,8 +24,8 @@ class Database(object):
                 )
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
-        except(Exception, psycopg2.DatabaseError) as e:
-            print(e)
+        except(Exception, psycopg2.DatabaseError) as e:   # pragma: no cover
+            print(e)                                      # pragma: no cover
 
     def create_tables(self):
         """ create tables """
@@ -68,7 +68,8 @@ class Database(object):
         Query to add food item to menu table in database
         """
         meal_query = """INSERT INTO menu(meal, description, price, image_name)
-        VALUES('{}','{}','{}','{}'); """.format(meal, description, price, image_name)
+        VALUES('{}','{}','{}','{}'); """.format(
+            meal, description, price, image_name)
         self.cursor.execute(meal_query)
         self.connection.commit()
 

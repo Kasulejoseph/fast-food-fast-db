@@ -194,8 +194,35 @@ class TestOrder(BaseTestCase):
             self.assertEqual(
                 data['Failed'], 'You dont have permission to add food items to menu')
 
+    def test_user_can_view_his_previous_order_historys(self):
+        with self.client:
+            self.signup_user(
+                "kasule", "kasule@gmail.com", "kansanga", "12389894", "user")
+            response = self.login_user("kasule", "12389894")
+            res = json.loads(response.data.decode())
+            self.assertTrue(res['auth_token'])
+            token = res['auth_token']
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
 
+            result = self.client.post(
+                '/api/v1/users/orders/',
+                headers=dict(Authorization='Bearer' " " + token),
+                content_type="application/json",
+                data=json.dumps({'meal_id': 1})
+            )
+            id_menu = 1
+            Database().get_order_by_value('menu', 'menu_id', id_menu)
+            data = json.loads(result.data.decode())
+            self.assertEqual(result.status_code, 200)
+            self.assertEqual(data['message'], 'Order successfully submited')
+            self.assertEqual(data['status'], 'Success')
 
-
-
-          
+            rs = self.client.get(
+                    '/api/v1/users/orders/',
+                    headers=dict(Authorization='Bearer' " " + token),
+                    content_type="application/json",
+            )
+            data = json.loads(rs.data.decode())
+            self.assertEqual(rs.status_code, 200)
+            self.assertTrue(data['Requested'])
+     

@@ -306,7 +306,7 @@ class TestOrder(BaseTestCase):
                 '/api/v1/orders/1',
                 headers=dict(Authorization='Bearer' " " + token),
                 content_type="application/json",
-                data = json.dumps({'status':'complete'})
+                data=json.dumps({'status': 'complete'})
             )
             data = json.loads(result.data.decode())
             self.assertEqual(result.status_code, 409)
@@ -325,7 +325,7 @@ class TestOrder(BaseTestCase):
                 '/api/v1/orders/1',
                 headers=dict(Authorization='Bearer' " " + token),
                 content_type="application/json",
-                data = json.dumps({})
+                data=json.dumps({})
             )
             data = json.loads(result.data.decode())
             self.assertEqual(result.status_code, 404)

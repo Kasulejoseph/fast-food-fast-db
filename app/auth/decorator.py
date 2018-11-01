@@ -11,7 +11,7 @@ def get_token():
         token = request.headers['Authorization']
         token = token.split(" ")[1]
     if not token:
-        return make_response(jsonify({
+        return make_response(jsonify({      # pragma: no cover
             'status': 'failed',
             'message': 'Token is missing!'
             }), 401)
@@ -38,7 +38,7 @@ def token_required(f):
             current_user = User(
                 query[0], query[1], query[2], query[3], query[4], query[5])
         except jwt.ExpiredSignatureError:
-            return 'Signature expired. Please log in again.', 401
+            return 'Signature expired. Please log in again.', 401  # pragma: no cover
         except jwt.InvalidTokenError:
             return 'Invalid token. Please log in again.', 401
         return f(current_user, *args, **kwargs)
@@ -50,13 +50,6 @@ def role_required():
     data = jwt.decode(token, 'mysecret')
     user_role = data['role']
     return user_role
-
-
-def user_id():
-    token = get_token()
-    data = jwt.decode(token, 'mysecret')
-    id = data['sub']
-    return id
 
 
 def response(id, username, message, token, status_code):
