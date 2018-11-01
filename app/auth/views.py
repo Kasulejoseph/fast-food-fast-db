@@ -97,7 +97,7 @@ class LoginUser(Resource):
                 payload = {
                     'email': new_user.email,
                     'exp': datetime.datetime.utcnow() +
-                    datetime.timedelta(days=60),
+                    datetime.timedelta(days=0, hours=23),
                     'iat': datetime.datetime.utcnow(),
                     'sub': new_user.user_id,
                     'role': new_user.role
@@ -114,20 +114,21 @@ class LoginUser(Resource):
                         token.decode('UTF-8'), 200)
             return response_message(
                 'Failed', 'incorrect password', 401)
-        except KeyError as e: 
+        except KeyError as e:
             return ({'KeyError': str(e)})
+
 
 class userDetails(Resource):
     def get(self):
         users = Database().get_users()
         user_list = []
         for user in users:
-            user_dict ={
-            "user_id": user[0],
-            "username": user[1],
-            "email": user[2],
-            "location": user[3],
-            "role": user[5]
+            user_dict = {
+                "user_id": user[0],
+                "username": user[1],
+                "email": user[2],
+                "location": user[3],
+                "role": user[5]
             }
             user_list.append(user_dict)
         return ({"users": user_list}), 200

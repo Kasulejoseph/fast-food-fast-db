@@ -82,7 +82,7 @@ class TestOrder(BaseTestCase):
             res = json.loads(response.data.decode())
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
 
             self.client.post(
                 '/api/v1/users/orders/',
@@ -97,7 +97,7 @@ class TestOrder(BaseTestCase):
             result = self.client.get(
                 '/api/v1/orders/',
                 headers=dict(Authorization='Bearer' " " + token),
-                data=json.dumps(all)
+                data=json.dumps(str(all))
             )
             da = json.loads(result.data.decode())
             self.assertGreater(len(da), 0)
@@ -192,7 +192,7 @@ class TestOrder(BaseTestCase):
             res = json.loads(response.data.decode())
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
 
             result = self.client.post(
                 '/api/v1/users/orders/',
@@ -223,7 +223,8 @@ class TestOrder(BaseTestCase):
             "description": "all",
             "price": 2000
         }
-        Database().add_to_menu(item['meal'], item['description'], item['price'])
+        Database().add_to_menu(
+            item['meal'], item['description'], item['price'], "image.jpg")
         Database().fetch_menu()
         result = self.client.get(
                 '/api/v1/menu',
@@ -271,7 +272,7 @@ class TestOrder(BaseTestCase):
             res = json.loads(response.data.decode())
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
 
             self.client.post(
                 '/api/v1/users/orders/',
@@ -340,7 +341,7 @@ class TestOrder(BaseTestCase):
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
 
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
             self.client.post(
                 '/api/v1/users/orders/',
                 headers=dict(Authorization='Bearer' " " + token),
@@ -369,7 +370,7 @@ class TestOrder(BaseTestCase):
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
 
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
             self.client.post(
                 '/api/v1/users/orders/',
                 headers=dict(Authorization='Bearer' " " + token),
@@ -398,7 +399,7 @@ class TestOrder(BaseTestCase):
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
 
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
             self.client.post(
                 '/api/v1/users/orders/',
                 headers=dict(Authorization='Bearer' " " + token),
@@ -427,7 +428,7 @@ class TestOrder(BaseTestCase):
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
 
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
             self.client.post(
                 '/api/v1/users/orders/',
                 headers=dict(Authorization='Bearer' " " + token),
@@ -456,7 +457,7 @@ class TestOrder(BaseTestCase):
             self.assertTrue(res['auth_token'])
             token = res['auth_token']
 
-            Database().add_to_menu("katogo", "all kind", 6000)
+            Database().add_to_menu("katogo", "all kind", 6000, "image.jpg")
             self.client.post(
                 '/api/v1/users/orders/',
                 headers=dict(Authorization='Bearer' " " + token),

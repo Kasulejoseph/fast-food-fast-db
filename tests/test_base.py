@@ -66,7 +66,8 @@ class BaseTestCase(unittest.TestCase):
         data = {
             "meal": meal,
             "description": desc,
-            "price": price
+            "price": price,
+            "image": "image.jpg"
         }
         return self.client.post(
             '/api/v1/menu',
@@ -83,7 +84,8 @@ class BaseTestCase(unittest.TestCase):
             "id": id,
             "meal": meal,
             "description": desc,
-            "price": price
+            "price": price,
+            "image": "image.jpg"
         }
         return self.client.get(
             '/api/v1/menu',
@@ -98,7 +100,7 @@ class BaseTestCase(unittest.TestCase):
         return self.client.delete(
             '/api/v1/menu/1',
             headers=dict(Authorization='Bearer' " " + token),
-            content_type = "application/json"
+            content_type="application/json"
         )
 
     def order(self, meal, desc, price, status):

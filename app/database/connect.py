@@ -38,13 +38,14 @@ class Database(object):
         create_table = """ CREATE TABLE IF NOT EXISTS menu(
         menu_id SERIAL PRIMARY KEY,
         meal VARCHAR(40), description VARCHAR(200),
-        price INT NOT NULL)"""
+        price INT NOT NULL, image_name VARCHAR(60))"""
         self.cursor.execute(create_table)
 
         create_table = """ CREATE TABLE IF NOT EXISTS orders(
         order_id SERIAL PRIMARY KEY, user_id INTEGER NOT NULL,
         menu_id INTEGER NOT NULL, meal VARCHAR(40), description
-        VARCHAR(200), price INT, status VARCHAR(30), FOREIGN KEY(user_id)
+        VARCHAR(200), price INT, status VARCHAR(30),
+        date DATE NOT NULL DEFAULT CURRENT_DATE, FOREIGN KEY(user_id)
         REFERENCES users(user_id) ON UPDATE CASCADE ON DELETE CASCADE,
         FOREIGN KEY(menu_id) REFERENCES menu(menu_id) ON UPDATE CASCADE ON
         DELETE CASCADE)"""
@@ -62,12 +63,12 @@ class Database(object):
         self.cursor.execute(user)
         self.connection.commit()
 
-    def add_to_menu(self, meal, description, price):
+    def add_to_menu(self, meal, description, price, image_name):
         """
         Query to add food item to menu table in database
         """
-        meal_query = """INSERT INTO menu(meal,description,price)
-        VALUES('{}','{}','{}'); """.format(meal, description, price)
+        meal_query = """INSERT INTO menu(meal, description, price, image_name)
+        VALUES('{}','{}','{}','{}'); """.format(meal, description, price, image_name)
         self.cursor.execute(meal_query)
         self.connection.commit()
 

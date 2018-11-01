@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, Blueprint, make_response, json
 from flask_restful import Api, Resource, abort
 from flasgger import swag_from
 from werkzeug import secure_filename
+from datetime import datetime
 from app.database.connect import Database
 from app.auth.decorator import token_required, role_required
 from app.auth.decorator import response, response_message
@@ -20,6 +21,10 @@ class OrderAll(Resource):
     @token_required
     def get(self, current_user):
         if role_required() == 'admin':
+            def default(o):
+                if type(o) is datetime.date or type(o) is datetime.datetime:
+                    return o.isoformat()
+
             all = Database.get_all_orders()
             all_order_list = []
             if not all:
@@ -32,7 +37,8 @@ class OrderAll(Resource):
                     "meal": row[3],
                     "desc": row[4],
                     "price": row[5],
-                    "status": row[6]
+                    "status": row[6],
+                    "date_created": str(row[7])
                 }
                 all_order_list.append(order_dict)
             return {'Orders': all_order_list}, 200
@@ -92,8 +98,12 @@ class OrderById(Resource):
         order_one = Database.get_order_by_value('orders', 'order_id', order_id)
         if order_one:
             response = {
-                'order_id': order_one[0], 'user_id': order_one[1], 'meal': order_one[3],
-                'desc': order_one[4], 'price': order_one[5]
+                'order_id': order_one[0],
+                'user_id': order_one[1],
+                'meal': order_one[3],
+                'desc': order_one[4],
+                'price': order_one[5],
+                'date': str(order_one[6])
                 }
             user = Database.get_order_by_value('users', 'user_id', order_id)
             return ({
@@ -157,7 +167,8 @@ class UserHistory(Resource):
                     "meal": order[3],
                     "desc": order[4],
                     "price": order[5],
-                    "status": order[6]
+                    "status": order[6],
+                    "date_created": str(order[7])
                 }
                 orders.append(order_dic)
             except IndexError as e:
@@ -182,7 +193,8 @@ class MenuAll(Resource):
                 "menu_id": row[0],
                 "meal": row[1],
                 "desc": row[2],
-                "price": row[3]
+                "price": row[3],
+                "image": row[4]
             }
             menu_list.append(menu_dict)
         return {'Onmenu': menu_list}, 200
@@ -204,6 +216,7 @@ class MenuPost(Resource):
             # image = data['image']
             meal = data['meal']
             desc = data['description']
+            image = data['image']
             price = data['price']
             if not isinstance(
                     desc, str) or not isinstance(meal, str):
@@ -222,7 +235,7 @@ class MenuPost(Resource):
             # file = os.path.join("UPLOAD_FOLDER", file)
             # image.append(secure_filename(image.filename)) 
             # print(image)
-            if Database.add_to_menu(meal, desc, price):
+            if Database.add_to_menu(meal, desc, price, image):
                 return {'Failed': 'Error adding a menu'}, 401
             return ({'message': 'successfully added to menu'}, 201)
         except KeyError as e:
